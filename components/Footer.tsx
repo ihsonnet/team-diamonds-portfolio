@@ -1,27 +1,57 @@
-import { Github, Youtube, Instagram } from "lucide-react";
-import { SOCIALS } from "@/lib/siteData";
+import Link from "next/link";
+import { Github, Youtube, Instagram, Diamond } from "lucide-react";
 
 export default function Footer() {
   return (
-    <footer className="relative z-10 py-16 border-t border-white/5 bg-[#05070a]/80 backdrop-blur-xl">
-      <div className="max-w-7xl mx-auto px-6 flex flex-col items-center space-y-8">
-        <div className="flex justify-center gap-10 text-slate-400">
-          <a href={SOCIALS.github} target="_blank" rel="noreferrer" aria-label="GitHub">
-            <Github size={22} className="hover:text-white transition-colors" />
-          </a>
-          <a href={SOCIALS.youtube} target="_blank" rel="noreferrer" aria-label="YouTube">
-            <Youtube size={22} className="hover:text-white transition-colors" />
-          </a>
-          <a href={SOCIALS.instagram} target="_blank" rel="noreferrer" aria-label="Instagram">
-            <Instagram size={22} className="hover:text-white transition-colors" />
-          </a>
+    <footer className="border-t border-white/10 bg-navy-950/80 backdrop-blur-xl">
+      <div className="mx-auto max-w-7xl px-6 py-12">
+        <div className="grid gap-10 md:grid-cols-3 items-center">
+          {/* Brand */}
+          <div className="flex items-center gap-3">
+            <span className="inline-flex items-center justify-center w-10 h-10 rounded-2xl bg-white/5 border border-white/10">
+              <Diamond className="text-cyan-300" size={18} />
+            </span>
+            <div>
+              <div className="text-white font-bold">Team Diamonds</div>
+              <div className="text-xs text-white/50">
+                Diamond in the Sky — Space learning for kids
+              </div>
+            </div>
+          </div>
+
+          {/* Links */}
+          <div className="flex justify-center gap-8 text-white/65">
+            <Link href="/" className="text-sm font-semibold hover:text-white transition">
+              Home
+            </Link>
+            <Link
+              href="/diamond-in-the-sky"
+              className="text-sm font-semibold hover:text-white transition"
+            >
+              Diamond In The Sky
+            </Link>
+            <Link href="/survey" className="text-sm font-semibold hover:text-white transition">
+              Survey
+            </Link>
+          </div>
+
+          {/* Social */}
+          <div className="flex justify-end gap-6 text-white/60">
+            <a href="#" className="hover:text-white transition" aria-label="GitHub">
+              <Github size={18} />
+            </a>
+            <a href="#" className="hover:text-white transition" aria-label="YouTube">
+              <Youtube size={18} />
+            </a>
+            <a href="#" className="hover:text-white transition" aria-label="Instagram">
+              <Instagram size={18} />
+            </a>
+          </div>
         </div>
 
-        <div className="h-px w-24 bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-
-        <p className="text-xs md:text-sm font-bold text-slate-500 uppercase tracking-[0.3em]">
-          © 2026 Team Diamonds
-        </p>
+        <div className="mt-10 text-center text-xs text-white/45 tracking-[0.25em] uppercase">
+          © {new Date().getFullYear()} Team Diamonds
+        </div>
       </div>
     </footer>
   );
