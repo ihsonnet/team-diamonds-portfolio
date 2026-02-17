@@ -1,218 +1,609 @@
-"use client";
+// app/diamond-in-the-sky/page.tsx
+// Update: Section-2 uses your local image: /section-2-bg.jpg
+// ✅ Full-width section background
+// ✅ Top border CURVED (big rounded “cap”)
+// ✅ Negative top margin (-30px) so it overlaps hero
+// ✅ Hero height increased a bit to compensate
+// No header/footer.
 
 import React from "react";
 import {
-  Rocket,
-  Star,
-  Palette,
-  Moon,
-  Smile,
-  BookOpen,
-  ChevronRight,
-  Code,
-  Globe,
-  PenTool,
-  Cloud,
-  CheckCircle2,
-  UserCircle2,
-  PlayCircle,
-  Telescope
+    Rocket,
+    Telescope,
+    Sparkles,
+    Stars,
+    Play,
+    MonitorPlay,
+    Palette,
+    Orbit,
+    CheckCircle2,
+    PenTool,
+    Code2,
+    Bug,
+    RocketIcon,
+    ClipboardList,
 } from "lucide-react";
 
-import { HERO_IMAGE, TEAM_MEMBERS } from "@/lib/siteData";
-import { DIAMOND_CONTENT } from "@/lib/diamondData";
+const HERO_BG = "https://i.ibb.co/ZRBKLxJb/Adobe-Stock-1524458761.jpg";
 
-export default function DiamondInTheSky() {
-  return (
-    <main className="min-h-screen bg-[#05070a] text-slate-100 selection:bg-blue-500/30 overflow-x-hidden">
-      {/* Dynamic CSS-Based Starfield Background */}
-      <div className="fixed inset-0 z-0 pointer-events-none">
-        <div className="absolute inset-0 bg-[radial-gradient(circle_at_50%_50%,#1a1e2e_0%,#05070a_100%)]" />
-        {[...Array(60)].map((_, i) => (
-          <div
-            key={i}
-            className="absolute bg-white rounded-full animate-pulse opacity-40"
-            style={{
-              top: `${Math.random() * 100}%`,
-              left: `${Math.random() * 100}%`,
-              width: `${Math.random() * 2 + 1}px`,
-              height: `${Math.random() * 2 + 1}px`,
-              animationDuration: `${Math.random() * 3 + 2}s`,
-              animationDelay: `${Math.random() * 2}s`
-            }}
-          />
-        ))}
-      </div>
+type TeamMember = { name: string; role: string };
 
-      <div className="relative z-10">
-        {/* 16:9 Aspect Ratio Hero Section */}
-        <section className="relative w-full aspect-[16/9] flex items-center justify-center overflow-hidden border-b border-white/5">
-          <div className="absolute inset-0 z-0">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#05070a]/20 to-[#05070a] z-10" />
-            <img
-              src={HERO_IMAGE}
-              alt="Space Scene"
-              className="w-full h-full object-cover opacity-80 scale-105 transition-transform duration-1000 hover:scale-100"
-            />
-          </div>
+const glass =
+    "bg-white/[0.06] backdrop-blur-md shadow-[0_18px_60px_rgba(0,0,0,0.45)]";
+const card =
+    "bg-white/[0.06] backdrop-blur-md shadow-[0_14px_46px_rgba(0,0,0,0.45)]";
 
-          <div className="relative z-20 text-center px-6 max-w-5xl space-y-4 md:space-y-8">
-            <h1 className="text-5xl md:text-8xl font-extrabold tracking-tighter text-white drop-shadow-[0_0_25px_rgba(255,255,255,0.4)]">
-              {DIAMOND_CONTENT.title}
-            </h1>
-            <p className="text-lg md:text-3xl font-medium text-blue-100/90 leading-tight">
-              {DIAMOND_CONTENT.subtitle}
-            </p>
-            <div className="flex flex-wrap justify-center gap-4 md:gap-6 pt-4">
-              <button className="px-8 py-3 md:px-10 md:py-4 bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl font-bold text-base md:text-lg transition-all hover:-translate-y-1 shadow-2xl">
-                Play the Game
-              </button>
-              <button className="px-8 py-3 md:px-10 md:py-4 bg-white/10 hover:bg-white/20 backdrop-blur-xl border border-white/20 rounded-2xl font-bold text-base md:text-lg transition-all hover:-translate-y-1 shadow-2xl">
-                Watch Demo
-              </button>
-            </div>
-          </div>
-        </section>
+function Pill({
+    icon: Icon,
+    label,
+}: {
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+}) {
+    return (
+        <span className="inline-flex items-center gap-2 rounded-full bg-white/10 px-3 py-1 text-xs font-semibold text-white/85 backdrop-blur">
+            <Icon className="h-4 w-4 text-cyan-200" />
+            {label}
+        </span>
+    );
+}
 
-        <div className="max-w-7xl mx-auto px-6 py-20 space-y-32">
-          {/* Mission Overview */}
-          <section className="text-center space-y-8">
-            <h2 className="text-4xl md:text-5xl font-bold">{DIAMOND_CONTENT.whatIsTitle}</h2>
-            <p className="text-xl text-slate-400 max-w-3xl mx-auto leading-relaxed">
-              {DIAMOND_CONTENT.whatIsText}
-            </p>
+function Badge({
+    icon: Icon,
+    label,
+}: {
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+}) {
+    return (
+        <span className="inline-flex items-center gap-2 rounded-full bg-white/[0.07] px-3 py-1 text-xs font-semibold text-white/80 backdrop-blur">
+            <Icon className="h-4 w-4 text-white/80" />
+            {label}
+        </span>
+    );
+}
 
-            <div className="grid grid-cols-1 md:grid-cols-3 gap-6 pt-10">
-              {[
-                { icon: <BookOpen className="text-blue-400" />, title: "Learn" },
-                { icon: <Rocket className="text-rose-400" />, title: "Play" },
-                { icon: <Telescope className="text-indigo-400" />, title: "Explore" }
-              ].map((item, idx) => (
-                <div
-                  key={idx}
-                  className="p-8 rounded-[2rem] bg-white/5 border border-white/10 hover:bg-white/10 transition-all group cursor-default"
-                >
-                  <div className="mb-6 inline-block p-5 rounded-2xl bg-slate-900 shadow-inner group-hover:scale-110 group-hover:rotate-3 transition-transform">
-                    {item.icon}
-                  </div>
-                  <h3 className="text-2xl font-bold">{item.title}</h3>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Project Goals Grid */}
-          <section className="space-y-12">
-            <div className="flex items-center justify-center gap-6">
-              <span className="h-px w-full bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-              <h2 className="text-3xl font-bold whitespace-nowrap px-4">{DIAMOND_CONTENT.goalsTitle}</h2>
-              <span className="h-px w-full bg-gradient-to-r from-transparent via-blue-500/50 to-transparent" />
-            </div>
-            <p className="text-center text-blue-200/60 font-medium -mt-6">{DIAMOND_CONTENT.goalsSubtitle}</p>
-
-            <div className="grid grid-cols-2 lg:grid-cols-4 gap-6">
-              {[
-                { icon: <Star size={32} />, text: DIAMOND_CONTENT.goals[0] },
-                { icon: <Palette size={32} />, text: DIAMOND_CONTENT.goals[1] },
-                { icon: <Moon size={32} />, text: DIAMOND_CONTENT.goals[2] },
-                { icon: <Smile size={32} />, text: DIAMOND_CONTENT.goals[3] }
-              ].map((goal, idx) => (
-                <div
-                  key={idx}
-                  className="p-8 rounded-3xl border border-white/5 bg-slate-900/40 text-center space-y-4 hover:border-blue-500/40 hover:bg-slate-900/60 transition-all shadow-lg"
-                >
-                  <div className="text-blue-500 flex justify-center drop-shadow-[0_0_10px_rgba(59,130,246,0.5)]">
-                    {goal.icon}
-                  </div>
-                  <p className="font-bold text-sm md:text-base leading-tight uppercase tracking-wide">{goal.text}</p>
-                </div>
-              ))}
-            </div>
-          </section>
-
-          {/* Technology & Process Flow */}
-          <section className="space-y-16">
-            <div className="text-center space-y-6">
-              <h2 className="text-3xl font-bold">{DIAMOND_CONTENT.techTitle}</h2>
-              <div className="flex flex-wrap justify-center gap-8 text-xl font-bold text-slate-200">
-                <div className="flex items-center gap-3 bg-white/5 px-6 py-2 rounded-xl border border-white/5">
-                  <Code className="text-blue-400" /> {DIAMOND_CONTENT.techBadges[0]}
-                </div>
-                <div className="flex items-center gap-3 bg-white/5 px-6 py-2 rounded-xl border border-white/5">
-                  <Globe className="text-sky-400" /> {DIAMOND_CONTENT.techBadges[1]}
-                </div>
-                <div className="flex items-center gap-3 bg-white/5 px-6 py-2 rounded-xl border border-white/5">
-                  <PenTool className="text-pink-500" /> {DIAMOND_CONTENT.techBadges[2]}
-                </div>
-                <div className="flex items-center gap-3 bg-white/5 px-6 py-2 rounded-xl border border-white/5">
-                  <Cloud className="text-blue-600" /> {DIAMOND_CONTENT.techBadges[3]}
-                </div>
-              </div>
-            </div>
-
-            {/* Workflow Progress Bar */}
-            <div className="relative flex flex-wrap lg:flex-nowrap justify-between items-center gap-4 p-6 rounded-full bg-white/5 border border-white/10 max-w-5xl mx-auto backdrop-blur-md shadow-inner">
-              {DIAMOND_CONTENT.workflowSteps.map((step, idx) => (
-                <div
-                  key={idx}
-                  className="flex items-center gap-3 text-slate-400 text-xs md:text-sm font-bold uppercase tracking-widest"
-                >
-                  <div className="w-3 h-3 rounded-full bg-blue-500/30 border border-blue-500" />
-                  <span>{step}</span>
-                  <ChevronRight size={16} className="opacity-30" />
-                </div>
-              ))}
-              <div className="flex items-center gap-2 text-blue-400 font-black text-sm uppercase tracking-widest bg-blue-500/10 px-6 py-2 rounded-full border border-blue-500/20 shadow-[0_0_20px_rgba(59,130,246,0.2)]">
-                <CheckCircle2 size={18} /> {DIAMOND_CONTENT.workflowEnd}
-              </div>
-            </div>
-          </section>
-
-          {/* Team Members */}
-          <section className="space-y-16">
-            <h2 className="text-3xl font-bold text-center">Meet Our Team</h2>
-            <div className="grid grid-cols-2 md:grid-cols-5 gap-6 md:gap-10">
-              {TEAM_MEMBERS.map((member, idx) => (
-                <a key={idx} href={member.website} className="text-center group space-y-4">
-                  <div className="aspect-square rounded-[2rem] bg-slate-900 border border-white/5 flex items-center justify-center group-hover:border-blue-500/50 transition-all duration-500 overflow-hidden relative shadow-xl">
-                    <UserCircle2 size={80} className="text-slate-800 group-hover:text-slate-700 transition-colors" />
-                    <div className="absolute inset-0 bg-gradient-to-t from-blue-500/20 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500" />
-                  </div>
-                  <div className="space-y-1">
-                    <h4 className="font-bold text-sm md:text-base leading-tight group-hover:text-blue-400 transition-colors">
-                      {member.name}
-                    </h4>
-                    <p className="text-[10px] md:text-xs text-slate-500 font-bold uppercase tracking-widest">
-                      {member.role}
-                    </p>
-                  </div>
-                </a>
-              ))}
-            </div>
-          </section>
-
-          {/* CTA */}
-          <section className="relative p-12 md:p-24 rounded-[4rem] bg-gradient-to-br from-blue-700 via-indigo-900 to-[#05070a] text-center space-y-8 shadow-2xl overflow-hidden border border-white/10 group">
-            <div className="absolute -top-10 -right-10 opacity-5 group-hover:scale-110 transition-transform duration-1000 rotate-12">
-              <Rocket size={320} />
-            </div>
-            <h2 className="text-4xl md:text-6xl font-black text-white leading-tight drop-shadow-xl">
-              {DIAMOND_CONTENT.ctaTitle}
+function SectionTitle({
+    title,
+    subtitle,
+}: {
+    title: string;
+    subtitle?: string;
+}) {
+    return (
+        <div className="text-center">
+            <h2 className="text-lg font-extrabold tracking-tight text-white sm:text-xl">
+                {title}
             </h2>
-            <div className="flex flex-wrap justify-center gap-6 relative z-10 pt-4">
-              <button className="px-10 py-4 bg-white text-slate-950 rounded-[1.5rem] font-bold text-lg hover:bg-blue-50 hover:scale-105 active:scale-95 transition-all shadow-2xl">
-                {DIAMOND_CONTENT.ctaButtons[0]}
-              </button>
-              <button className="px-10 py-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white rounded-[1.5rem] font-bold text-lg hover:bg-white/20 hover:scale-105 active:scale-95 transition-all shadow-2xl">
-                {DIAMOND_CONTENT.ctaButtons[1]}
-              </button>
-              <button className="px-10 py-4 bg-white/10 backdrop-blur-xl border border-white/20 text-white rounded-[1.5rem] font-bold text-lg hover:bg-white/20 hover:scale-105 active:scale-95 transition-all shadow-2xl flex items-center gap-2">
-                <PlayCircle size={20} /> {DIAMOND_CONTENT.ctaButtons[2]}
-              </button>
-            </div>
-          </section>
+            {subtitle ? (
+                <p className="mx-auto mt-1 max-w-2xl text-sm text-white/80">
+                    {subtitle}
+                </p>
+            ) : null}
         </div>
-      </div>
-    </main>
-  );
+    );
+}
+
+function Card({
+    icon: Icon,
+    title,
+    desc,
+    accent = "from-indigo-600 to-cyan-500",
+}: {
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    desc: string;
+    accent?: string;
+}) {
+    return (
+        <div className={`rounded-2xl ${card} p-5 transition hover:bg-white/[0.085]`}>
+            <div className="flex items-start gap-4">
+                <div className={`shrink-0 rounded-xl bg-gradient-to-br ${accent} p-3`}>
+                    <Icon className="h-5 w-5 text-white" />
+                </div>
+                <div>
+                    <div className="text-sm font-extrabold text-white">{title}</div>
+                    <p className="mt-1 text-sm leading-relaxed text-white/75">{desc}</p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function SoftPanel({ children }: { children: React.ReactNode }) {
+    return <div className={`rounded-3xl ${glass} p-6`}>{children}</div>;
+}
+
+function SectionKicker({
+    icon: Icon,
+    label,
+}: {
+    icon: React.ComponentType<{ className?: string }>;
+    label: string;
+}) {
+    return (
+        <div className="mx-auto mb-2 flex w-fit items-center gap-2 rounded-full bg-white/[0.08] px-3 py-1 text-xs font-semibold text-white/80 backdrop-blur">
+            <Icon className="h-4 w-4 text-indigo-200" />
+            {label}
+        </div>
+    );
+}
+
+function ConstellationPlaceholder() {
+    return (
+        <div className="relative h-44 w-full overflow-hidden rounded-2xl bg-white/[0.05]">
+            <div className="absolute inset-0 opacity-80 [background:radial-gradient(8px_8px_at_18%_35%,rgba(99,102,241,.55),transparent_60%),radial-gradient(7px_7px_at_45%_25%,rgba(14,165,233,.55),transparent_60%),radial-gradient(7px_7px_at_65%_55%,rgba(16,185,129,.45),transparent_60%),radial-gradient(8px_8px_at_82%_30%,rgba(245,158,11,.45),transparent_60%)]" />
+            <svg viewBox="0 0 420 160" className="absolute inset-0 h-full w-full" aria-hidden="true">
+                <g fill="none" stroke="rgba(255,255,255,.22)" strokeWidth="2" strokeLinecap="round">
+                    <path d="M60,110 L140,70 L210,95 L270,55 L340,85" />
+                </g>
+                <g fill="rgba(255,255,255,.42)">
+                    <circle cx="60" cy="110" r="5" />
+                    <circle cx="140" cy="70" r="5" />
+                    <circle cx="210" cy="95" r="5" />
+                    <circle cx="270" cy="55" r="5" />
+                    <circle cx="340" cy="85" r="5" />
+                </g>
+            </svg>
+            <div className="absolute bottom-3 left-3 rounded-full bg-black/25 px-3 py-1 text-xs font-semibold text-white/70 backdrop-blur">
+                Placeholder image
+            </div>
+        </div>
+    );
+}
+
+function FeatureMini({
+    icon: Icon,
+    title,
+    desc,
+    color = "text-indigo-300",
+}: {
+    icon: React.ComponentType<{ className?: string }>;
+    title: string;
+    desc: string;
+    color?: string;
+}) {
+    return (
+        <div className={`rounded-2xl ${card} p-4 transition hover:bg-white/[0.085]`}>
+            <div className="flex items-start gap-3">
+                <div className="rounded-xl bg-white/[0.06] p-2">
+                    <Icon className={`h-5 w-5 ${color}`} />
+                </div>
+                <div>
+                    <div className="text-sm font-extrabold text-white">{title}</div>
+                    <p className="mt-1 text-sm leading-relaxed text-white/75">{desc}</p>
+                </div>
+            </div>
+        </div>
+    );
+}
+
+function TechPill({ label }: { label: string }) {
+    return (
+        <div className="rounded-full bg-white/[0.07] px-4 py-2 text-xs font-semibold text-white/80 backdrop-blur">
+            {label}
+        </div>
+    );
+}
+
+function Pipeline() {
+    const steps = [
+        { label: "Requirement", icon: ClipboardList },
+        { label: "Design", icon: PenTool },
+        { label: "Development", icon: Code2 },
+        { label: "Testing", icon: Bug },
+        { label: "Deployment", icon: RocketIcon },
+        { label: "Review", icon: CheckCircle2 },
+    ];
+
+    return (
+        <div className={`rounded-3xl ${glass} p-5`}>
+            <div className="flex flex-wrap items-center justify-center gap-3">
+                {steps.map((s, i) => (
+                    <React.Fragment key={s.label}>
+                        <div className="inline-flex items-center gap-2 rounded-full bg-white/[0.06] px-4 py-2 text-xs font-semibold text-white/80 backdrop-blur">
+                            <s.icon className="h-4 w-4 text-indigo-200" />
+                            {s.label}
+                        </div>
+                        {i !== steps.length - 1 ? (
+                            <div className="hidden h-[2px] w-10 rounded-full bg-white/10 sm:block" />
+                        ) : null}
+                    </React.Fragment>
+                ))}
+            </div>
+        </div>
+    );
+}
+
+function TeamCard({ name, role }: { name: string; role: string }) {
+    return (
+        <div className={`rounded-2xl ${card} p-4 text-center transition hover:bg-white/[0.085]`}>
+            <div className="mx-auto mb-3 h-16 w-16 rounded-2xl bg-white/[0.05]" />
+            <div className="text-sm font-extrabold text-white">{name}</div>
+            <div className="mt-1 text-xs font-semibold text-white/70">{role}</div>
+        </div>
+    );
+}
+
+function SoftSeparator() {
+    return (
+        <div className="my-10 flex items-center justify-center">
+            <div className="h-[3px] w-[min(720px,90%)] rounded-full bg-[linear-gradient(to_right,transparent,rgba(255,255,255,0.14),transparent)]" />
+        </div>
+    );
+}
+
+/** Big curved top edge for section 2 */
+function CurvedTop() {
+    return (
+        <div className="pointer-events-none absolute inset-x-0 top-0 -translate-y-1/2">
+            <div className="mx-auto max-w-[1400px] px-0">
+                <div className="h-24 rounded-t-[64px] bg-slate-950/60 backdrop-blur-md shadow-[0_-18px_70px_rgba(0,0,0,0.6)]" />
+                <div className="-mt-24 h-24 rounded-t-[64px] bg-[linear-gradient(to_bottom,rgba(255,255,255,0.12),transparent_60%)] opacity-60" />
+            </div>
+        </div>
+    );
+}
+
+export default function Page() {
+    const team: TeamMember[] = [
+        { name: "Tisha Khandokar", role: "Project Lead" },
+        { name: "Md Munim Ahmed", role: "System Analyst" },
+        { name: "Injamamul Haque Sonet", role: "System Architect & Technical Lead" },
+        { name: "Abu Niaz", role: "Developer" },
+        { name: "Zarin Chowdhury", role: "Researcher" },
+    ];
+
+    return (
+        <main className="min-h-screen bg-slate-950 text-white">
+            <div className="relative min-h-screen overflow-hidden">
+                {/* global night base */}
+                <div className="pointer-events-none absolute inset-0 bg-[radial-gradient(1200px_700px_at_50%_0%,rgba(99,102,241,0.28),transparent_60%),radial-gradient(900px_600px_at_80%_20%,rgba(14,165,233,0.22),transparent_55%),radial-gradient(1000px_700px_at_20%_40%,rgba(16,185,129,0.14),transparent_60%),radial-gradient(1200px_800px_at_50%_100%,rgba(245,158,11,0.10),transparent_60%)]" />
+                <div className="pointer-events-none absolute inset-0 opacity-55 [background-image:radial-gradient(rgba(255,255,255,0.16)_1px,transparent_1px)] [background-size:22px_22px]" />
+                <div className="pointer-events-none absolute inset-0 opacity-30 [background-image:radial-gradient(rgba(255,255,255,0.09)_1px,transparent_1px)] [background-size:46px_46px]" />
+                <div className="pointer-events-none absolute inset-0 bg-gradient-to-b from-black/35 via-transparent to-black/55" />
+
+                {/* SECTION 1: HERO (full width, taller) */}
+                <section className="relative">
+                    <div
+                        className="relative bg-cover bg-center"
+                        style={{ backgroundImage: `url("${HERO_BG}")` }}
+                    >
+                        <div className="absolute inset-0 bg-gradient-to-b from-slate-950/70 via-slate-950/35 to-slate-950/90" />
+                        <div className="absolute inset-0 [background:radial-gradient(900px_520px_at_50%_0%,rgba(255,255,255,0.10),transparent_60%)]" />
+
+                        <div className="relative mx-auto max-w-6xl px-4 py-16 sm:px-6 sm:py-24">
+                            <div className="mx-auto max-w-3xl text-center">
+                                <div className="flex items-center justify-center gap-2">
+                                    <Pill icon={Rocket} label="Team Diamonds" />
+                                    <Pill icon={Stars} label="Space Learning" />
+                                </div>
+
+                                <h1 className="mt-5 text-4xl font-extrabold tracking-tight text-white sm:text-6xl">
+                                    Diamond In the Sky
+                                </h1>
+                                <p className="mx-auto mt-4 max-w-2xl text-base text-white/80">
+                                    Discover the magic of stars — Learn, Play, and Explore the Night Sky!
+                                </p>
+
+                                <div className="mt-8 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                    <button className="inline-flex items-center gap-2 rounded-xl bg-white px-5 py-3 text-sm font-semibold text-slate-950 shadow-sm transition hover:bg-white/95">
+                                        <Play className="h-5 w-5 text-indigo-600" />
+                                        Play the Game
+                                    </button>
+                                    <button className="inline-flex items-center gap-2 rounded-xl bg-white/10 px-5 py-3 text-sm font-semibold text-white backdrop-blur transition hover:bg-white/15">
+                                        <MonitorPlay className="h-5 w-5 text-cyan-200" />
+                                        Watch Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* SECTION 2: framed + arc connector like your sketch */}
+                <section className="relative -mt-[30px]">
+                    {/* full width (behind) */}
+                    <div className="absolute inset-0 bg-slate-950" />
+
+                    <div className="relative">
+                        {/* Frame */}
+                        <div
+                            className="
+                                    relative overflow-hidden
+                                    bg-slate-950/55 backdrop-blur-md
+                                    shadow-[0_28px_90px_rgba(0,0,0,0.65)]
+                                "
+                        >
+                            {/* Image INSIDE the frame */}
+                            <div
+                                className="absolute inset-0 bg-cover bg-center"
+                                style={{ backgroundImage: `url("/images/section-2-bg.jpg")` }}
+                            />
+                            {/* overlays for readability */}
+                            <div className="absolute inset-0 bg-gradient-to-b from-slate-950/55 via-slate-950/60 to-slate-950/85" />
+                            <div className="absolute inset-0 [background:radial-gradient(900px_520px_at_50%_0%,rgba(255,255,255,0.08),transparent_60%)]" />
+
+                            {/* ===== The CURVE connector (like your sketch) ===== */}
+                            {/* This draws a big arc at the top inside the same frame */}
+                            <svg
+                                className="pointer-events-none absolute left-0 top-0 h-24 w-full sm:h-28"
+                                viewBox="0 0 1200 160"
+                                preserveAspectRatio="none"
+                                aria-hidden="true"
+                            >
+                                {/* The arc “cap” fill = same as frame base so it looks like one piece */}
+                                <path
+                                    d="M0,0 H1200 V60
+             C920,120 740,150 600,150
+             C460,150 280,120 0,60
+             Z"
+                                    fill="rgba(2,6,23,0.72)"
+                                />
+                                {/* subtle highlight rim */}
+                                <path
+                                    d="M0,58
+             C280,118 460,145 600,145
+             C740,145 920,118 1200,58"
+                                    fill="none"
+                                    stroke="rgba(255,255,255,0.12)"
+                                    strokeWidth="2"
+                                />
+                            </svg>
+
+                            {/* Content (push down so it doesn’t sit under the arc) */}
+                            <div className="relative px-5 pb-10 pt-24 sm:px-10 sm:pb-14 sm:pt-28">
+                                <div className="mx-auto max-w-4xl">
+                                    <SectionTitle
+                                        title="What is Diamond In the Sky?"
+                                        subtitle="An interactive space-learning game for kids aged 10–12"
+                                    />
+
+                                    <div className="mt-6">
+                                        <SoftPanel>
+                                            <div className="flex flex-wrap gap-2">
+                                                <Badge icon={Telescope} label="Learn" />
+                                                <Badge icon={Play} label="Play" />
+                                                <Badge icon={Sparkles} label="Explore" />
+                                            </div>
+
+                                            <div className="mt-5 grid gap-5 lg:grid-cols-[1fr_320px]">
+                                                <div className="rounded-3xl bg-white/[0.05] p-5">
+                                                    <div className="text-sm font-extrabold text-white">
+                                                        A fun way to understand constellations
+                                                    </div>
+                                                    <p className="mt-2 text-sm leading-relaxed text-white/75">
+                                                        Connect star patterns, learn color & brightness, and explore the night sky
+                                                        through interactive missions.
+                                                    </p>
+
+                                                    <div className="mt-4 flex flex-wrap gap-2">
+                                                        <Badge icon={Stars} label="Constellations" />
+                                                        <Badge icon={Palette} label="Star colors" />
+                                                        <Badge icon={Sparkles} label="Brightness" />
+                                                    </div>
+
+                                                    <div className="mt-5">
+                                                        <ConstellationPlaceholder />
+                                                    </div>
+                                                </div>
+
+                                                <div className="space-y-4">
+                                                    <div
+                                                        className={`rounded-3xl ${card} p-5 bg-gradient-to-br from-indigo-500/15 to-cyan-500/10`}
+                                                    >
+                                                        <div className="text-sm font-extrabold text-white">
+                                                            Built for the Space Apps vibe
+                                                        </div>
+                                                        <p className="mt-2 text-sm leading-relaxed text-white/75">
+                                                            Clean, modern UI with colorful accents—optimized for night mode.
+                                                        </p>
+                                                    </div>
+
+                                                    <FeatureMini
+                                                        icon={Sparkles}
+                                                        title="Engaging missions"
+                                                        desc="Short challenges that keep learning fun."
+                                                        color="text-indigo-300"
+                                                    />
+                                                    <FeatureMini
+                                                        icon={Telescope}
+                                                        title="Guided exploration"
+                                                        desc="Simple steps to identify patterns in the sky."
+                                                        color="text-cyan-300"
+                                                    />
+                                                    <FeatureMini
+                                                        icon={CheckCircle2}
+                                                        title="Kid-friendly learning"
+                                                        desc="Clear UI that focuses attention on discovery."
+                                                        color="text-emerald-300"
+                                                    />
+                                                </div>
+                                            </div>
+                                        </SoftPanel>
+                                    </div>
+                                </div>
+
+                                {/* optional separator inside frame */}
+                                <div className="mt-10 flex items-center justify-center">
+                                    <div className="h-[3px] w-[min(720px,90%)] rounded-full bg-[linear-gradient(to_right,transparent,rgba(255,255,255,0.16),transparent)]" />
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                {/* SECTIONS 3+ (same as before, using the global dark base) */}
+                <section className="relative">
+                    <div className="mx-auto max-w-6xl px-4 pb-14 sm:px-6">
+                        {/* ABOUT */}
+                        <div className="mx-auto max-w-4xl">
+                            <div className="pt-2">
+                                <SectionKicker icon={Sparkles} label="About the Project" />
+                            </div>
+                            <SectionTitle title="Learning, Playing, Exploring the Stars" />
+
+                            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                                <Card
+                                    icon={Stars}
+                                    title="Recognize star patterns"
+                                    desc="Identify constellations by connecting dots."
+                                    accent="from-indigo-600 to-violet-600"
+                                />
+                                <Card
+                                    icon={Palette}
+                                    title="Understand star colors"
+                                    desc="Learn what color tells us about stars."
+                                    accent="from-cyan-600 to-indigo-600"
+                                />
+                                <Card
+                                    icon={Orbit}
+                                    title="Explore the night sky"
+                                    desc="Navigate different sky regions and stories."
+                                    accent="from-emerald-600 to-cyan-600"
+                                />
+                                <Card
+                                    icon={Sparkles}
+                                    title="Make astronomy fun"
+                                    desc="Gamified learning with friendly visuals."
+                                    accent="from-amber-500 to-rose-500"
+                                />
+                            </div>
+                        </div>
+
+                        <SoftSeparator />
+
+                        {/* HOW IT WORKS */}
+                        <div className="mx-auto max-w-4xl">
+                            <SectionKicker icon={Rocket} label="How It Works" />
+                            <SectionTitle title="Play → Learn → Explore" />
+
+                            <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                                <div className={`rounded-3xl ${card} p-6`}>
+                                    <div className="flex items-start gap-4">
+                                        <div className="rounded-2xl bg-gradient-to-br from-indigo-600 to-cyan-500 p-3">
+                                            <Telescope className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm font-extrabold text-white">Learn to Play</div>
+                                            <p className="mt-1 text-sm leading-relaxed text-white/75">
+                                                Discover stars & constellations with guided steps.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-5 rounded-2xl bg-white/[0.05] p-4">
+                                        <div className="text-sm font-bold text-white/90">Quick flow</div>
+                                        <ul className="mt-3 space-y-2 text-sm text-white/75">
+                                            <li>• Choose a constellation mission</li>
+                                            <li>• Connect stars in the right order</li>
+                                            <li>• Learn the story and key facts</li>
+                                        </ul>
+                                    </div>
+                                </div>
+
+                                <div className={`rounded-3xl ${card} p-6`}>
+                                    <div className="flex items-start gap-4">
+                                        <div className="rounded-2xl bg-gradient-to-br from-emerald-600 to-amber-500 p-3">
+                                            <Sparkles className="h-5 w-5 text-white" />
+                                        </div>
+                                        <div>
+                                            <div className="text-sm font-extrabold text-white">Play with Stars</div>
+                                            <p className="mt-1 text-sm leading-relaxed text-white/75">
+                                                Adjust brightness & color to see patterns clearly.
+                                            </p>
+                                        </div>
+                                    </div>
+
+                                    <div className="mt-5 grid gap-3 sm:grid-cols-2">
+                                        <div className="rounded-2xl bg-white/[0.05] p-4">
+                                            <div className="text-sm font-bold text-white/90">Brightness control</div>
+                                            <p className="mt-2 text-sm text-white/75">
+                                                Make faint stars visible without clutter.
+                                            </p>
+                                        </div>
+                                        <div className="rounded-2xl bg-white/[0.05] p-4">
+                                            <div className="text-sm font-bold text-white/90">Color hints</div>
+                                            <p className="mt-2 text-sm text-white/75">
+                                                Learn how temperature links to color.
+                                            </p>
+                                        </div>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+
+                        <SoftSeparator />
+
+                        {/* TECHNOLOGY */}
+                        <div className="mx-auto max-w-4xl">
+                            <SectionKicker icon={Code2} label="Our Technology" />
+                            <SectionTitle title="Tools & Workflow" />
+
+                            <div className="mt-6 space-y-4">
+                                <div className={`rounded-3xl ${card} p-5`}>
+                                    <div className="flex flex-wrap items-center justify-center gap-3">
+                                        <TechPill label="Dart" />
+                                        <TechPill label="Flutter" />
+                                        <TechPill label="Canva" />
+                                        <TechPill label="Azure" />
+                                        <TechPill label="Azure" />
+                                    </div>
+                                </div>
+
+                                <Pipeline />
+                            </div>
+                        </div>
+
+                        <SoftSeparator />
+
+                        {/* TEAM */}
+                        <div className="mx-auto max-w-4xl">
+                            <SectionKicker icon={Stars} label="Meet Our Team" />
+                            <SectionTitle title="Team Diamonds" />
+
+                            <div className="mt-6 grid grid-cols-2 gap-4 sm:grid-cols-3 lg:grid-cols-5">
+                                {team.map((m) => (
+                                    <TeamCard key={m.name} name={m.name} role={m.role} />
+                                ))}
+                            </div>
+                        </div>
+
+                        <SoftSeparator />
+
+                        {/* CTA */}
+                        <div className="mx-auto max-w-4xl pb-6">
+                            <div className={`rounded-3xl ${glass} p-8 text-center`}>
+                                <h3 className="text-lg font-extrabold text-white">
+                                    Join the Journey of Discovery!
+                                </h3>
+                                <p className="mx-auto mt-2 max-w-2xl text-sm text-white/75">
+                                    Start learning constellations, play missions, and explore the night sky.
+                                </p>
+
+                                <div className="mt-6 flex flex-col items-center justify-center gap-3 sm:flex-row">
+                                    <button className="inline-flex items-center gap-2 rounded-xl bg-white/[0.08] px-5 py-3 text-sm font-semibold text-white/85 backdrop-blur transition hover:bg-white/[0.12]">
+                                        <Sparkles className="h-5 w-5 text-indigo-300" />
+                                        Start Learning
+                                    </button>
+                                    <button className="inline-flex items-center gap-2 rounded-xl bg-indigo-500 px-5 py-3 text-sm font-semibold text-white shadow-sm transition hover:bg-indigo-400">
+                                        <Play className="h-5 w-5 text-white" />
+                                        Try the Game
+                                    </button>
+                                    <button className="inline-flex items-center gap-2 rounded-xl bg-white/[0.08] px-5 py-3 text-sm font-semibold text-white/85 backdrop-blur transition hover:bg-white/[0.12]">
+                                        <MonitorPlay className="h-5 w-5 text-cyan-200" />
+                                        Watch Demo
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div className="pb-6 text-center text-xs text-white/45">
+                            © 2026 TEAM DIAMONDS
+                        </div>
+                    </div>
+                </section>
+            </div>
+        </main>
+    );
 }
