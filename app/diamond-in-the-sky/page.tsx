@@ -597,10 +597,6 @@ export default function Page() {
                                 </div>
                             </div>
                         </div>
-
-                        <div className="pb-6 text-center text-xs text-white/45">
-                            © 2026 TEAM DIAMONDS
-                        </div>
                     </div>
                 </section>
             </div>
