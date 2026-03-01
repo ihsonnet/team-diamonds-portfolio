@@ -5,7 +5,7 @@ import { useRouter } from "next/navigation";
 import { Rocket, Trophy, PlaneTakeoff } from "lucide-react";
 import { cx } from "../../lib/utils";
 
-const DIAMOND_LOGO = "/images/Diamond Logo.png";
+const DIAMOND_LOGO = "/images/Diamond_Logo.png";
 
 type Bubble = { name: string; role: string; img: string };
 
@@ -214,7 +214,7 @@ export default function Hero() {
       <section className="relative h-[100dvh] w-full flex flex-col items-center justify-center z-50">
         
         <div className="absolute top-8 sm:top-12 w-full text-center px-4 z-50">
-          <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-thin tracking-tighter text-white drop-shadow-2xl">
+          {/* <h1 className="text-5xl sm:text-6xl lg:text-7xl xl:text-8xl font-thin tracking-tighter text-white drop-shadow-2xl">
             Team{" "}
             <span className="font-normal relative inline-block">
               <span className="absolute -inset-2 bg-cyan-500/20 blur-2xl rounded-full" />
@@ -222,7 +222,7 @@ export default function Hero() {
                 Diamonds
               </span>
             </span>
-          </h1>
+          </h1> */}
         </div>
 
         {/* ORBITAL CONTAINER */}

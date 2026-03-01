@@ -5,6 +5,8 @@ import Link from "next/link";
 import { Stars, Rocket } from "lucide-react";
 import { motion } from "framer-motion";
 
+
+
 export default function Navbar() {
   return (
     // Outer wrapper handles positioning without blocking clicks underneath the nav
@@ -28,30 +30,36 @@ export default function Navbar() {
         
         {/* --- LOGO --- */}
         <Link href="/" className="flex items-center gap-3 group pl-2">
-          <div className="flex items-center justify-center w-8 h-8 rounded-full bg-cyan-500/10 border border-cyan-500/30 transition-transform duration-500 group-hover:scale-110 group-hover:rotate-12 group-hover:bg-cyan-500/20">
-            <Stars className="h-4 w-4 text-cyan-300" />
-          </div>
-          <div className="flex flex-col">
-            <span className="text-[11px] font-black leading-tight tracking-[0.2em] text-white uppercase">
-              Team <span className="text-cyan-300">Diamonds</span>
+              <img
+                src="/images/Diamond_Logo.png"
+                alt="Team Diamonds Logo"
+                className="w-12 h-12 relative z-10 object-contain drop-shadow-[0_0_30px_rgba(34,211,238,0.4)] animate-float transition-all duration-700 group-hover:scale-0 group-hover:opacity-0 group-hover:-rotate-90"
+              /> 
+          <h1 className="text-2xl sm:text-3xl lg:text-3xl xl:text-4xl font-thin tracking-tighter text-white drop-shadow-2xl">
+            Team{" "}
+            <span className="font-normal relative inline-block">
+              <span className="absolute -inset-2 bg-cyan-500/20 blur-2xl rounded-full" />
+              <span className="relative bg-clip-text text-transparent bg-gradient-to-r from-cyan-300 via-indigo-300 to-purple-400">
+                Diamonds
+              </span>
             </span>
-          </div>
+          </h1>
         </Link>
 
         {/* --- CENTER LINKS --- */}
         {/* Hidden on very small screens to prevent crowding, adjust breakpoints as needed */}
         <div className="hidden sm:flex items-center gap-6">
           <Link 
+            href="/" 
+            className="text-xs font-semibold tracking-wider text-white/60 uppercase transition-colors hover:text-white"
+          >
+            Home
+          </Link>
+          <Link 
             href="/diamond-in-the-sky" 
             className="text-xs font-semibold tracking-wider text-white/60 uppercase transition-colors hover:text-white"
           >
             Project
-          </Link>
-          <Link 
-            href="/media" 
-            className="text-xs font-semibold tracking-wider text-white/60 uppercase transition-colors hover:text-white"
-          >
-            Media
           </Link>
         </div>
 
