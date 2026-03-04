@@ -6,7 +6,16 @@ const SECTION2_BG = "/images/section-2-bg.jpg";
 
 export default function Footer() {
   return (
-    <footer className="relative overflow-hidden">
+    <footer className="force-trebuchet relative overflow-hidden">
+      
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        /* Force Trebuchet MS everywhere inside this component */
+        .force-trebuchet, .force-trebuchet * {
+          font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif !important;
+        }
+      `}} />
+
       {/* Background image + overlays */}
       <div className="absolute inset-0 -z-10">
         <div
