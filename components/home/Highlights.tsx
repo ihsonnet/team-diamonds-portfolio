@@ -15,20 +15,20 @@ const INITIAL_LEFT = [
     desc: "Invited as a special guest to inspire and guide the next generation of space explorers. Sharing our journey to ignite curiosity among young minds.",
     img: "/images/Pilot.jpg",
     icon: Rocket,
-    color: "text-cyan-400",
-    glow: "rgba(34,211,238,1)",
-    badgeBg: "bg-cyan-500/10",
+    color: "text-blue-400",
+    glow: "rgba(37,99,235,1)",
+    badgeBg: "bg-blue-500/10",
   },
   { 
     id: "spaceverse", 
     title: "SPACEVERSE 1.0", 
     tag: "Panelist", 
     icon: Mic, 
-    color: "text-cyan-400", 
-    glow: "rgba(34,211,238,1)", 
-    badgeBg: "bg-cyan-500/10", 
+    color: "text-blue-400", 
+    glow: "rgba(37,99,235,1)", 
+    badgeBg: "bg-blue-500/10", 
     desc: "Shared insights on the future of interactive space education and stellar variability.", 
-    img: "/images/Spaceverse.jpg",
+    img: "/images/DU.jpg",
   }
 ];
 
@@ -38,9 +38,9 @@ const INITIAL_RIGHT = [
     title: "Washington University of Science & Technology", 
     tag: "Workshop", 
     icon: Users, 
-    color: "text-cyan-400", 
-    glow: "rgba(34,211,238,1)", 
-    badgeBg: "bg-cyan-500/10", 
+    color: "text-blue-400", 
+    glow: "rgba(37,99,235,1)", 
+    badgeBg: "bg-blue-500/10", 
     desc: "Conducted a hands-on workshop bridging the gap between complex space data and accessible technology.", 
     img: "/images/WUST.jpg",
   },
@@ -49,9 +49,9 @@ const INITIAL_RIGHT = [
     title: "বাংলাদেশ ২০২২: গৌরবময় অর্জন উদযাপন", 
     tag: "Invited Guest", 
     icon: Trophy, 
-    color: "text-cyan-400", 
-    glow: "rgba(34,211,238,1)", 
-    badgeBg: "bg-cyan-500/10", 
+    color: "text-blue-400", 
+    glow: "rgba(37,99,235,1)", 
+    badgeBg: "bg-blue-500/10", 
     desc: "Honored to participate in the celebration of glorious achievements and technological milestones.", 
     img: "/images/Ekattor.jpg",
   },
@@ -60,9 +60,9 @@ const INITIAL_RIGHT = [
     title: "NRB Global Reception", 
     tag: "Reception", 
     icon: Sparkles, 
-    color: "text-cyan-400", 
-    glow: "rgba(34,211,238,1)", 
-    badgeBg: "bg-cyan-500/10", 
+    color: "text-blue-400", 
+    glow: "rgba(37,99,235,1)", 
+    badgeBg: "bg-blue-500/10", 
     desc: "Received a special reception recognizing our innovative approach to educating children about the cosmos.", 
     img: "/images/NRB.jpg",
   },
@@ -75,9 +75,9 @@ const DEFAULT_FEATURED = {
   desc: "An exclusive celebration program hosted at NASA Headquarters in Washington, D.C., honoring the global winners of the NASA Space Apps Challenge.",
   img: "/images/NASA.jpg",
   icon: Award,
-  color: "text-cyan-400",
-  glow: "rgba(34,211,238,1)",
-  badgeBg: "bg-cyan-500/10",
+  color: "text-blue-400",
+  glow: "rgba(37,99,235,1)",
+  badgeBg: "bg-blue-500/10",
 };
 
 export default function MissionGallery() {
@@ -105,17 +105,15 @@ export default function MissionGallery() {
           font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif !important;
         }
       `}} />
-
-      {/* --- Background Ambience --- */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-full h-full bg-[radial-gradient(circle_at_50%_10%,rgba(56,189,248,0.05)_0%,transparent_50%)] pointer-events-none" />
       
+      {/* Title Section */}
       <div className="relative z-10 flex flex-col items-center text-center mb-16 px-4">
         <div className="inline-flex items-center gap-2 mb-4 px-3 py-1 rounded-full bg-white/5 border border-white/10 backdrop-blur-md">
-          <Sparkles className="h-3 w-3 text-cyan-400" />
+          <Sparkles className="h-3 w-3 text-blue-400" />
           <span className="text-[10px] font-bold tracking-[0.2em] uppercase text-white/80">Mission Archives</span>
         </div>
-        <h2 className="text-4xl md:text-5xl font-extralight text-white tracking-tight">
-          Highlighted <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-blue-500">Events</span>
+        <h2 className="text-4xl md:text-5xl font-extralight text-white tracking-tight drop-shadow-md">
+          Highlighted <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Events</span>
         </h2>
       </div>
 
@@ -145,7 +143,6 @@ export default function MissionGallery() {
                 exit={{ opacity: 0, scale: 1.05 }}
                 transition={{ duration: 0.6, ease: [0.22, 1, 0.36, 1] }}
                 className="relative h-full w-full rounded-[2.5rem] p-[2px] overflow-hidden group"
-                style={{ boxShadow: `0 0 50px -12px ${featured.glow.replace('1)', '0.4)')}` }}
               >
                 {/* Conic Spinning Border */}
                 <div 
@@ -153,12 +150,12 @@ export default function MissionGallery() {
                   style={{ background: `conic-gradient(from 90deg at 50% 50%, transparent 0%, transparent 70%, ${featured.glow} 100%)` }}
                 />
 
-                <div className="relative h-full w-full rounded-[calc(2.5rem-2px)] overflow-hidden bg-[#05070E] flex flex-col">
+                <div className="relative h-full w-full rounded-[calc(2.5rem-2px)] overflow-hidden bg-[#060d1b] flex flex-col">
                   
-                  {/* Top Block: 4:3 Image (Uncropped) */}
-                  <div className="relative w-full aspect-[4/3] max-h-[50%] shrink-0 bg-[#02040A] overflow-hidden">
+                  {/* Top Block: 4:3 Blended Image */}
+                  <div className="relative w-full aspect-[4/3] max-h-[50%] shrink-0 bg-[#060d1b] overflow-hidden">
                     <div 
-                      className="absolute inset-0 bg-contain bg-center bg-no-repeat transition-transform duration-1000 group-hover:scale-105" 
+                      className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-80 transition-transform duration-1000 group-hover:scale-105" 
                       style={{ backgroundImage: `url('${featured.img}')` }} 
                     />
                     
@@ -170,8 +167,8 @@ export default function MissionGallery() {
                       </div>
                     </div>
                     
-                    {/* Subtle fade to blend image smoothly into the text area below */}
-                    <div className="absolute inset-x-0 bottom-0 h-16 bg-gradient-to-t from-[#05070E] to-transparent pointer-events-none" />
+                    {/* Seamless blend image smoothly into the transparent card base */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-[#060d1b] via-[#060d1b]/40 to-transparent pointer-events-none" />
                   </div>
 
                   {/* Bottom Block: Text Content & Button */}
@@ -221,20 +218,21 @@ function SideCard({ item, onClick }: { item: any, onClick: () => void }) {
   return (
     <button 
       onClick={onClick}
-      className="group relative w-full h-[312px] shrink-0 text-left overflow-hidden rounded-[2rem] border border-white/10 bg-[#05070E] backdrop-blur-md transition-all duration-500 hover:border-white/30 hover:shadow-2xl flex flex-col"
+      className="group relative w-full h-[312px] shrink-0 text-left overflow-hidden rounded-[2rem] border border-white/5 bg-[#060d1b] backdrop-blur-md transition-all duration-500 hover:border-blue-500/30 hover:shadow-[0_0_30px_rgba(37,99,235,0.2)] flex flex-col"
     >
-      {/* Top Block: 4:3 Image */}
-      <div className="relative w-full flex-1 overflow-hidden bg-[#02040A]">
+      {/* Top Block: Blended Image */}
+      <div className="relative w-full flex-1 overflow-hidden bg-[#060d1b]">
         <div 
-          className="absolute inset-0 bg-contain bg-center bg-no-repeat opacity-80 transition-transform duration-700 group-hover:scale-110" 
+          className="absolute inset-0 bg-cover bg-center bg-no-repeat opacity-70 transition-transform duration-700 group-hover:scale-110 group-hover:opacity-90" 
           style={{ backgroundImage: `url('${item.img}')` }} 
         />
-        <div className="absolute inset-0 bg-black/40 group-hover:bg-black/10 transition-colors pointer-events-none" />
+        {/* Deep fade into the transparent background */}
+        <div className="absolute inset-0 bg-gradient-to-t from-[#060d1b] via-[#060d1b]/30 to-transparent pointer-events-none" />
       </div>
 
-      {/* Bottom Block: Title Separated from Image */}
-      <div className="relative w-full p-6 bg-[#05070E] z-20 border-t border-white/5 shrink-0">
-        <h3 className="text-lg font-medium text-white tracking-tight group-hover:text-cyan-300 transition-colors line-clamp-2">
+      {/* Bottom Block: Title seamlessly blended */}
+      <div className="relative w-full px-6 pb-6 pt-2 z-20 shrink-0">
+        <h3 className="text-lg font-medium text-white tracking-tight group-hover:text-blue-400 transition-colors line-clamp-2">
           {item.title}
         </h3>
       </div>

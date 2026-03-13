@@ -641,10 +641,8 @@
 "use client";
 
 import { useState, useEffect } from "react";
-import Lenis from "@studio-freight/lenis";
+// Removed Lenis import
 
-
-import Navbar from "@/components/home/Navbar";
 import ProjectHero from "@/components/project/ProjectHero";
 import Overview    from "@/components/project/Overview";
 import Feature     from "@/components/project/Feature";
@@ -725,7 +723,7 @@ function GlobalStyles() {
         scrollbar-width: none;
       }
 
-      html { scroll-behavior: smooth; }
+      /* Removed scroll-behavior: smooth */
     `}</style>
   );
 }
@@ -733,24 +731,7 @@ function GlobalStyles() {
 // ── Page ───────────────────────────────────────────────────────────
 export default function DiamondInTheSkyPage() {
 
-  // Smooth scroll
-  useEffect(() => {
-    const lenis = new Lenis({
-      duration: 1.2,
-      easing: (t) => Math.min(1, 1.001 - Math.pow(2, -10 * t)),
-      orientation: "vertical",
-      gestureOrientation: "vertical",
-      smoothWheel: true,
-    });
-
-    function raf(time: number) {
-      lenis.raf(time);
-      requestAnimationFrame(raf);
-    }
-    requestAnimationFrame(raf);
-
-    return () => lenis.destroy();
-  }, []);
+  // Removed Lenis useEffect hook
 
   return (
     <main className="min-h-screen bg-[#02040A] text-white selection:bg-cyan-500/30 overflow-x-hidden relative">

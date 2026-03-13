@@ -1,64 +1,101 @@
 "use client";
 
-// ── Helper: single expanding card ─────────────────────────────────
-function HoloTeamCard({ name, role, img }: { name: string; role: string; img: string }) {
+import React from "react";
+import { Crown } from "lucide-react";
+
+// ── Helper: Single Crew Card ──────────────────────────────────────
+function CrewCard({ name, role, img, isLeader }: { name: string; role: string; img: string; isLeader?: boolean }) {
   return (
-    <div className="group relative flex-1 lg:hover:flex-[2.5] h-24 lg:h-full transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] overflow-hidden rounded-2xl glass-panel cursor-pointer border border-white/5 hover:border-cyan-500/50 hover:shadow-[0_0_30px_rgba(34,211,238,0.2)]">
-
-      {/* Holographic scanning line */}
-      <div className="absolute top-0 left-0 w-full h-1 bg-cyan-400/50 shadow-[0_0_10px_#22d3ee] -translate-y-[100px] group-hover:animate-[float_2s_ease-in-out_infinite] z-20" />
-
-      {/* Desaturated → colour on hover */}
-      <div className="absolute inset-0 bg-black/60 group-hover:bg-transparent z-10 transition-colors duration-700" />
-      <img
-        src={img}
-        className="absolute inset-0 w-full h-full object-cover object-top opacity-50 grayscale group-hover:grayscale-0 group-hover:opacity-100 transition-all duration-700 scale-105 group-hover:scale-100"
-        alt={name}
-      />
-
-      {/* Text overlay */}
-      <div className="absolute bottom-0 left-0 w-full p-4 lg:p-6 bg-gradient-to-t from-[#02040A] via-[#02040A]/80 to-transparent z-20 flex flex-col justify-end h-full lg:h-auto">
-        <div className="translate-y-0 lg:translate-y-4 group-hover:translate-y-0 transition-transform duration-700">
-          <h4 className="font-bold text-lg lg:text-2xl mb-1 text-white whitespace-nowrap overflow-hidden text-ellipsis drop-shadow-md">
-            {name}
-          </h4>
-          <p className="text-cyan-400 text-[10px] lg:text-xs uppercase tracking-widest font-bold opacity-100 lg:opacity-0 group-hover:opacity-100 transition-opacity duration-700 delay-100 whitespace-nowrap overflow-hidden text-ellipsis">
-            {role}
-          </p>
+    <div 
+      className={`group relative flex flex-col items-center justify-center p-6 md:p-8 w-full md:w-[320px] lg:w-[360px] rounded-[2rem] bg-gradient-to-b from-blue-950/40 via-indigo-950/20 to-[#02040A]/90 backdrop-blur-md border border-blue-500/20 hover:border-indigo-500/50 transition-all duration-500 cursor-pointer hover:-translate-y-2
+      ${isLeader 
+        ? 'shadow-[0_8px_32px_rgba(250,204,21,0.15)] hover:shadow-[0_15px_40px_rgba(250,204,21,0.25)] scale-[1.02] md:scale-105 z-10' 
+        : 'shadow-[0_8px_32px_rgba(0,0,0,0.4)] hover:shadow-[0_15px_40px_rgba(99,102,241,0.25)]'
+      }`}
+    >
+      
+      {/* Unique Leader Badge */}
+      {isLeader && (
+        <div className="absolute -top-5 bg-[#050A15] border border-[#FACC15]/50 px-4 py-1.5 rounded-full flex items-center gap-2 shadow-[0_0_15px_rgba(250,204,21,0.4)] z-20 transition-transform group-hover:-translate-y-1">
+          <Crown className="w-4 h-4 text-[#FACC15]" />
+          <span className="text-[#FACC15] text-[10px] font-bold tracking-[0.2em] uppercase">Project Lead</span>
         </div>
+      )}
+
+      {/* Avatar Container (Yellow border removed) */}
+      <div 
+        className="relative w-32 h-32 md:w-40 md:h-40 lg:w-48 lg:h-48 mb-6 rounded-[1.5rem] overflow-hidden border border-white/5 group-hover:border-indigo-400/50 transition-colors duration-500 shadow-inner"
+      >
+        <img
+          src={img}
+          alt={name}
+          className="w-full h-full object-cover object-top transition-all duration-500 group-hover:scale-105"
+        />
       </div>
+
+      {/* Text Details */}
+      <h4 className="text-white text-lg md:text-xl font-bold tracking-wide text-center drop-shadow-md">
+        {name}
+      </h4>
+      <p 
+        className={`text-[10px] md:text-xs uppercase tracking-[0.2em] font-bold mt-2 text-center transition-colors duration-500
+        ${isLeader ? 'text-[#FACC15] drop-shadow-[0_0_5px_rgba(250,204,21,0.5)]' : 'text-indigo-400 drop-shadow-[0_0_5px_rgba(99,102,241,0.4)]'}`}
+      >
+        {role}
+      </p>
     </div>
   );
 }
 
-// ── Main export ────────────────────────────────────────────────────
+// ── Main Export ────────────────────────────────────────────────────
 export default function Crew() {
-  const members = [
-    { name: "Tisha Khandokar",       role: "Project Lead & Designer",      img: "/images/team/tisha.jpg" },
-    { name: "Md Munim Ahmed",         role: "System Analyst & Designer",    img: "/images/team/munim.jpg" },
-    { name: "Injamamul Haque Sonet",  role: "System Architect & Lead Dev",  img: "/images/team/sonet.jpg" },
-    { name: "Abu Niaz",               role: "Developer",                    img: "/images/team/abu-niaz.jpg" },
-    { name: "Zarin Chowdhury",        role: "Researcher",                   img: "/images/team/zarin.jpg" },
+  const topRow = [
+    { name: "Injamamul Haque Sonet", role: "Product Architect",     img: "/images/team/sonet.jpg" },
+    { name: "Tisha Khandokar",       role: "Product Lead", img: "/images/team/tisha.jpg", isLeader: true },
+    { name: "Md Munim Ahmed",        role: "Product Engineer", img: "/images/team/munim.jpg" },
+  ];
+
+  const bottomRow = [
+    { name: "Abu Niaz",              role: "MVP Developer",    img: "/images/team/niaz.jpg" },
+    { name: "Zarin Chowdhury",       role: "Product Researcher",   img: "/images/team/zarin.jpg" },
   ];
 
   return (
-    <section className="relative py-32 px-6 md:px-12 lg:px-20 max-w-[1600px] mx-auto text-center">
+    <section className="relative py-24 md:py-32 px-6 md:px-12 lg:px-20 max-w-[1400px] mx-auto z-10 font-sans">
+      
+      <style dangerouslySetInnerHTML={{
+        __html: `
+        .force-font, .force-font * {
+          font-family: 'Trebuchet MS', 'Lucida Grande', 'Lucida Sans Unicode', 'Lucida Sans', Tahoma, sans-serif !important;
+        }
+      `}} />
 
-      {/* Heading */}
-      <div className="max-w-2xl mx-auto mb-16 animate-float">
-        <h2 className="text-5xl font-black mb-6 tracking-tight uppercase">
-          Crew <span className="text-cyan-400">Roster</span>
-        </h2>
-        <p className="text-white/70 text-lg">
-          The visionary architects bringing the cosmos to your fingertips.
-        </p>
-      </div>
+      <div className="force-font">
+        {/* Heading */}
+        <div className="text-center mb-16 md:mb-20">
+          <h2 className="text-4xl md:text-5xl lg:text-[3.5rem] font-black tracking-tight uppercase text-white drop-shadow-md">
+            Crew <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Roster</span>
+          </h2>
+        </div>
 
-      {/* Accordion row */}
-      <div className="flex flex-col lg:flex-row h-auto min-h-[600px] lg:h-[500px] gap-4 w-full">
-        {members.map((m) => (
-          <HoloTeamCard key={m.name} {...m} />
-        ))}
+        {/* Card Grid Layout */}
+        <div className="flex flex-col items-center gap-8 md:gap-12 w-full">
+          
+          {/* Top Row (3 items) */}
+          <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-8 md:gap-6 lg:gap-8 w-full">
+            {topRow.map((m) => (
+              <CrewCard key={m.name} {...m} />
+            ))}
+          </div>
+
+          {/* Bottom Row (2 items centered) */}
+          <div className="flex flex-col md:flex-row flex-wrap justify-center items-center gap-8 md:gap-6 lg:gap-8 w-full">
+            {bottomRow.map((m) => (
+              <CrewCard key={m.name} {...m} />
+            ))}
+          </div>
+
+        </div>
       </div>
     </section>
   );
