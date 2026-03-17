@@ -12,12 +12,17 @@ const MAGAZINE_PAGES = [
       <div className="flex flex-col items-center justify-center h-full text-center px-6 relative overflow-hidden">
         {/* Subtle background glow to simulate the magazine cover depth */}
         <div className="absolute inset-0 bg-[url('https://images.unsplash.com/photo-1462331940025-496dfbfc7564?q=80&w=1080&auto=format&fit=crop')] opacity-20 mix-blend-overlay" />
-        <Sparkles className="relative z-10 w-10 h-10 text-cyan-400 mb-6 drop-shadow-[0_0_15px_rgba(34,211,238,0.8)]" />
-        <h4 className="relative z-10 text-cyan-400 font-bold tracking-[0.3em] uppercase text-xs mb-4">Team Diamonds Presents</h4>
+        <Sparkles 
+          className="relative z-10 w-10 h-10 mb-6 drop-shadow-[0_0_15px_rgba(99,102,241,0.8)]" 
+          style={{ stroke: "url(#icon-gradient)" }} 
+        />
+        <h4 className="relative z-10 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 font-bold tracking-[0.3em] uppercase text-xs mb-4">
+          Team Diamonds Presents
+        </h4>
         <h1 className="relative z-10 text-4xl sm:text-5xl font-black text-white tracking-[0.1em] uppercase drop-shadow-2xl leading-tight mb-8">
-          Diamond <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-cyan-300 to-blue-500">In The</span> <br /> Sky
+          Diamond <br /> <span className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">In The</span> <br /> Sky
         </h1>
-        <div className="relative z-10 w-24 h-[1px] bg-cyan-500/50 mb-8" />
+        <div className="relative z-10 w-24 h-[1px] bg-indigo-500/50 mb-8" />
         <p className="relative z-10 text-white/60 font-medium tracking-[0.4em] uppercase text-[9px] sm:text-[10px]">
           The Global Winner's Chronicle
         </p>
@@ -29,12 +34,14 @@ const MAGAZINE_PAGES = [
     bg: "bg-[#05070E]",
     content: (
       <div className="flex flex-col justify-center h-full px-8 sm:px-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-cyan-500/30 bg-cyan-500/10 w-fit mb-6">
-          <Rocket className="w-3.5 h-3.5 text-cyan-400" />
-          <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-cyan-300">Our Vision</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 w-fit mb-6">
+          <Rocket className="w-3.5 h-3.5" style={{ stroke: "url(#icon-gradient)" }} />
+          <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
+            Our Vision
+          </span>
         </div>
         <h2 className="text-2xl sm:text-3xl font-light text-white mb-6 leading-tight">
-          Gamifying the <span className="font-medium text-cyan-400">Cosmos</span>
+          Gamifying the <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Cosmos</span>
         </h2>
         <p className="text-xs sm:text-sm text-white/70 font-light leading-relaxed mb-4">
           Our mission was to create an interactive learning platform that makes complex space data accessible to children.
@@ -50,7 +57,9 @@ const MAGAZINE_PAGES = [
     bg: "bg-[#0A0D15]",
     content: (
       <div className="flex flex-col h-full px-8 sm:px-12 justify-center">
-        <h4 className="text-purple-500 font-bold tracking-[0.2em] uppercase text-[9px] mb-2">Team Leadership</h4>
+        <h4 className="font-bold tracking-[0.2em] uppercase text-[9px] mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
+          Team Leadership
+        </h4>
         <h2 className="text-3xl font-thin text-white mb-6">Tisha Khandokar</h2>
         <Quote className="w-6 h-6 text-white/10 mb-4" />
         <p className="text-sm text-white/80 font-light leading-relaxed italic">
@@ -64,23 +73,25 @@ const MAGAZINE_PAGES = [
     bg: "bg-[#05070E]",
     content: (
       <div className="flex flex-col justify-center h-full px-8 sm:px-12">
-        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-emerald-500/30 bg-emerald-500/10 w-fit mb-6">
-          <Globe className="w-3.5 h-3.5 text-emerald-400" />
-          <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-emerald-300">Global Impact</span>
+        <div className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-indigo-500/30 bg-indigo-500/10 w-fit mb-6">
+          <Globe className="w-3.5 h-3.5" style={{ stroke: "url(#icon-gradient)" }} />
+          <span className="text-[9px] font-bold tracking-[0.2em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
+            Global Impact
+          </span>
         </div>
         <h2 className="text-2xl font-light text-white mb-6 leading-tight">
-          From Local to <span className="font-medium text-emerald-400">Global</span>
+          From Local to <span className="font-medium text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Global</span>
         </h2>
         <p className="text-xs sm:text-sm text-white/80 font-light leading-relaxed mb-4">
           Over 31,500 participants competed, but our unique blend of storytelling and science stood out to the NASA judges.
         </p>
         <div className="grid grid-cols-2 gap-4 mt-2">
           <div className="bg-white/5 p-3 rounded-lg border border-white/10">
-            <p className="text-cyan-400 font-bold text-lg">31k+</p>
+            <p className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 font-bold text-lg">31k+</p>
             <p className="text-[8px] text-white/40 uppercase tracking-tighter">Participants</p>
           </div>
           <div className="bg-white/5 p-3 rounded-lg border border-white/10">
-            <p className="text-cyan-400 font-bold text-lg">Winner</p>
+            <p className="text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 font-bold text-lg">Winner</p>
             <p className="text-[8px] text-white/40 uppercase tracking-tighter">Global Category</p>
           </div>
         </div>
@@ -93,12 +104,14 @@ const MAGAZINE_PAGES = [
     content: (
       <div className="flex flex-col h-full px-8 sm:px-12 justify-center">
         <Users className="w-8 h-8 text-white/20 mb-6" />
-        <h4 className="text-cyan-500 font-bold tracking-[0.2em] uppercase text-[9px] mb-2">The Brilliance</h4>
+        <h4 className="font-bold tracking-[0.2em] uppercase text-[9px] mb-2 text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
+          The Brilliance
+        </h4>
         <h2 className="text-3xl font-thin text-white mb-6">Synergy</h2>
         <p className="text-xs sm:text-sm text-white/70 font-light leading-relaxed mb-4">
           Our team brought together researchers, designers, and developers to build a cohesive universe for "Diamond in the Sky."
         </p>
-        <ul className="text-[10px] text-cyan-400/80 space-y-2 uppercase tracking-widest font-bold">
+        <ul className="text-[10px] text-indigo-400/80 space-y-2 uppercase tracking-widest font-bold">
           <li>• Innovative Research</li>
           <li>• Creative UI/UX</li>
           <li>• Advanced Storytelling</li>
@@ -112,13 +125,13 @@ const MAGAZINE_PAGES = [
     content: (
       <div className="flex flex-col items-center justify-center h-full text-center px-6">
         <div className="w-16 h-16 rounded-full border border-white/10 flex items-center justify-center mb-6">
-          <Award className="w-6 h-6 text-cyan-400/60" />
+          <Award className="w-6 h-6 opacity-60" style={{ stroke: "url(#icon-gradient)" }} />
         </div>
         <h1 className="text-xl sm:text-2xl font-black text-white/80 tracking-[0.2em] uppercase mb-4">
           Journey to <br/> The Stars
         </h1>
         <div className="w-12 h-[1px] bg-white/20 mb-4" />
-        <p className="text-cyan-400/60 font-medium tracking-[0.4em] uppercase text-[10px]">
+        <p className="font-medium tracking-[0.4em] uppercase text-[10px] text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500 opacity-80">
           Team Diamonds 2022-2024
         </p>
       </div>
@@ -175,16 +188,28 @@ export default function MagazineViewer() {
         }
       `}} />
 
+      {/* SVG Gradient Definition for Icons */}
+      <svg width="0" height="0" className="absolute pointer-events-none">
+        <defs>
+          <linearGradient id="icon-gradient" x1="0%" y1="0%" x2="100%" y2="0%">
+            <stop offset="0%" stopColor="#60a5fa" />
+            <stop offset="100%" stopColor="#6366f1" />
+          </linearGradient>
+        </defs>
+      </svg>
+
       <div className="relative z-10 max-w-4xl mx-auto px-4 sm:px-6 flex flex-col items-center">
         
         <div className="flex flex-col items-center text-center mb-12">
           <div className="flex items-center gap-2 mb-4">
-             <div className="h-px w-8 bg-cyan-500/50" />
-             <span className="text-cyan-400 text-[10px] font-bold tracking-[0.3em] uppercase">Digital Archive</span>
-             <div className="h-px w-8 bg-cyan-500/50" />
+             <div className="h-px w-8 bg-indigo-500/50" />
+             <span className="text-[10px] font-bold tracking-[0.3em] uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
+               Digital Archive
+             </span>
+             <div className="h-px w-8 bg-indigo-500/50" />
           </div>
           <h2 className="text-4xl sm:text-5xl font-extralight text-white tracking-tight mb-4">
-            Magazine <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 via-blue-400 to-indigo-400">Edition</span>
+            Magazine <span className="font-normal text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">Edition</span>
           </h2>
         </div>
 
@@ -227,7 +252,7 @@ export default function MagazineViewer() {
                     <button 
                       key={i} 
                       onClick={() => setCurrentPage(i)}
-                      className={`h-1.5 rounded-full transition-all duration-500 ${i === currentPage ? 'w-8 bg-cyan-500' : 'w-2 bg-white/10 hover:bg-white/30'}`} 
+                      className={`h-1.5 rounded-full transition-all duration-500 ${i === currentPage ? 'w-8 bg-gradient-to-r from-blue-400 to-indigo-500' : 'w-2 bg-white/10 hover:bg-white/30'}`} 
                     />
                 ))}
             </div>
@@ -238,17 +263,19 @@ export default function MagazineViewer() {
                   target="_blank"
                   className="group relative flex items-center gap-4 bg-white/5 hover:bg-white/10 border border-white/10 px-8 py-4 rounded-full transition-all duration-300"
               >
-                  <BookOpen className="w-4 h-4 text-cyan-400" />
+                  <BookOpen className="w-4 h-4" style={{ stroke: "url(#icon-gradient)" }} />
                   <span className="text-white font-bold tracking-[0.2em] text-xs uppercase">Read Full on Canva</span>
               </a>
               
               <a 
                   href="/Magazine_Diamond_In_The_Sky.pdf" 
                   download
-                  className="group relative flex items-center gap-4 bg-cyan-500/10 hover:bg-cyan-500/20 border border-cyan-500/20 px-8 py-4 rounded-full transition-all duration-300"
+                  className="group relative flex items-center gap-4 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 px-8 py-4 rounded-full transition-all duration-300"
               >
-                  <Download className="w-4 h-4 text-cyan-400 group-hover:animate-bounce" />
-                  <span className="text-cyan-100 font-bold tracking-[0.2em] text-xs uppercase">Get PDF</span>
+                  <Download className="w-4 h-4 group-hover:animate-bounce" style={{ stroke: "url(#icon-gradient)" }} />
+                  <span className="font-bold tracking-[0.2em] text-xs uppercase text-transparent bg-clip-text bg-gradient-to-r from-blue-400 to-indigo-500">
+                    Get PDF
+                  </span>
               </a>
             </div>
         </div>
