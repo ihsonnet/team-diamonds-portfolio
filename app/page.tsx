@@ -47,7 +47,7 @@ function ScrollProgress() {
 // ==========================================
 // UTILITIES
 // ==========================================
-export function SoftSeparator() {
+function SoftSeparator() {
   return (
     <div className="my-20 sm:my-32 flex items-center justify-center relative">
       <div className="absolute w-full h-64 bg-cyan-500/5 blur-[120px] rounded-full pointer-events-none opacity-20" />
