@@ -1,9 +1,10 @@
 // app/components/Footer.tsx
 import Link from "next/link";
-import { Github, Youtube, Instagram, Diamond, Sparkles } from "lucide-react";
+import { Github, Youtube, Instagram, Diamond } from "lucide-react";
+import { DEMO_VIDEO_URL, PORTFOLIO_REPO_URL } from "@/lib/externalLinks";
 
 // Updated to use the new premium dark blue background image
-const FOOTER_BG = "/abstract-luxury-gradient-blue-background-smooth-dark-blue-with-black-vignette-studio-banner-2.jpg";
+const FOOTER_BG = "/images/after-hero-bg.jpeg";
 
 export default function Footer() {
   return (
@@ -101,15 +102,31 @@ export default function Footer() {
           {/* Social + small badge */}
           <div className="flex flex-col items-center justify-end gap-4 md:items-end">
             <div className="flex gap-6 text-white/60">
-              <a href="#" className="hover:text-blue-400 hover:scale-110 transition-all" aria-label="GitHub">
+              <a
+                href={PORTFOLIO_REPO_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-blue-400 hover:scale-110 transition-all"
+                aria-label="GitHub"
+              >
                 <Github size={18} />
               </a>
-              <a href="#" className="hover:text-blue-400 hover:scale-110 transition-all" aria-label="YouTube">
+              <a
+                href={DEMO_VIDEO_URL}
+                target="_blank"
+                rel="noreferrer"
+                className="hover:text-blue-400 hover:scale-110 transition-all"
+                aria-label="YouTube"
+              >
                 <Youtube size={18} />
               </a>
-              <a href="#" className="hover:text-blue-400 hover:scale-110 transition-all" aria-label="Instagram">
+              <span
+                className="hover:text-blue-400 hover:scale-110 transition-all"
+                aria-label="Instagram"
+                role="img"
+              >
                 <Instagram size={18} />
-              </a>
+              </span>
             </div>
           </div>
         </div>

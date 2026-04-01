@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { Star, Telescope, Lightbulb } from "lucide-react";
+import { MAGAZINE_URL } from "@/lib/externalLinks";
 
 export default function Join() {
   return (
@@ -27,12 +29,17 @@ export default function Join() {
         </div>
 
         <div className="flex flex-wrap justify-center gap-6">
-          <button className="px-10 py-4 rounded-xl bg-gradient-to-r from-blue-400 to-indigo-500 text-white font-bold text-lg hover:scale-105 transition-transform shadow-[0_0_20px_rgba(99,102,241,0.4)]">
+          <a
+            href={MAGAZINE_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="px-10 py-4 rounded-xl bg-gradient-to-r from-blue-400 to-indigo-500 text-white font-bold text-lg hover:scale-105 transition-transform shadow-[0_0_20px_rgba(99,102,241,0.4)]"
+          >
             Start Learning
-          </button>
-          <button className="px-10 py-4 rounded-xl border border-indigo-400/50 hover:bg-indigo-500/20 text-white font-bold transition-all uppercase tracking-widest text-sm backdrop-blur-sm">
+          </a>
+          <Link href="/play" className="px-10 py-4 rounded-xl border border-indigo-400/50 hover:bg-indigo-500/20 text-white font-bold transition-all uppercase tracking-widest text-sm backdrop-blur-sm">
             Try the Game
-          </button>
+          </Link>
         </div>
 
       </div>

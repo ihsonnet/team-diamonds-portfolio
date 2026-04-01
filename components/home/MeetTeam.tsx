@@ -11,7 +11,7 @@ type TeamBio = {
   img: string;
   desc: string;
   highlights: string[];
-  website: string; 
+  website?: string; 
 };
 
 const bios: TeamBio[] = [
@@ -21,7 +21,6 @@ const bios: TeamBio[] = [
     img: "/images/team/zarin.jpg",
     desc: "Gathers insights and validates educational game mechanics.",
     highlights: ["Data Analysis", "User Testing", "Strategy"],
-    website: "https://example.com/zarin", 
   },
   {
     name: "Md Munim Ahmed",
@@ -29,7 +28,6 @@ const bios: TeamBio[] = [
     img: "/images/team/munim.jpg",
     desc: "Invents features, designs user flows, and engineers the visual experience.",
     highlights: ["Feature Strategy", "UI/UX Design", "User-flow Development"],
-    website: "https://example.com/munim",
   },
   {
     name: "Tisha Khandokar",
@@ -37,7 +35,6 @@ const bios: TeamBio[] = [
     img: "/images/team/tisha.jpg",
     desc: "Directs high-impact product vision and delivers internationally recognized milestones.",
     highlights: ["Strategic Innovation", "Principal Authority", "International Influence"],
-    website: "https://example.com/tisha",
   },
   {
     name: "Injamamul Haque Sonet",
@@ -45,7 +42,6 @@ const bios: TeamBio[] = [
     img: "/images/team/sonet.jpg",
     desc: "Architects product foundations and drives the technical vision for complex development.",
     highlights: ["Database Design", "Technical Authority", "System Security"],
-    website: "https://example.com/sonet",
   },
   {
     name: "Abu Niaz",
@@ -53,15 +49,14 @@ const bios: TeamBio[] = [
     img: "/images/team/niaz.jpg",
     desc: "Transforms designs into clean, highly optimized interactive code.",
     highlights: ["Frontend", "Animation", "Integration"],
-    website: "https://example.com/niaz",
   },
 ];
 
 export default function MeetTeam() {
   const [activeIdx, setActiveIdx] = useState(2);
 
-  const handleCardClick = (idx: number, website: string) => {
-    if (activeIdx === idx) {
+  const handleCardClick = (idx: number, website?: string) => {
+    if (activeIdx === idx && website) {
       window.open(website, "_blank", "noopener,noreferrer");
     } else {
       setActiveIdx(idx);
@@ -109,7 +104,11 @@ export default function MeetTeam() {
                     ? "md:flex- flex- border-blue-500/40 shadow-[0_0_40px_-10px_rgba(37,99,235,0.3)] bg-[#060d1b]" 
                     : "md:flex- flex-1 border-white/5 shadow-none hover:border-blue-500/30 hover:bg-[#060d1b]/80 bg-[#060d1b]/40"
                 )}
-                title={isActive ? `Visit ${item.name}'s website` : `View ${item.name}`}
+                title={
+                  isActive && item.website
+                    ? `Visit ${item.name}'s website`
+                    : `View ${item.name}`
+                }
               >
                 {/* Background Image Setup */}
                 <img

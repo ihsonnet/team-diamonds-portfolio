@@ -1,6 +1,8 @@
 "use client";
 
+import Link from "next/link";
 import { Play, Gamepad2, Star } from "lucide-react";
+import { DEMO_VIDEO_URL } from "@/lib/externalLinks";
 
 export default function ProjectHero() {
   const HERO_BG = "/images/home-hero.jpeg";
@@ -39,21 +41,26 @@ export default function ProjectHero() {
         </p>
 
         <div className="flex flex-col sm:flex-row gap-6 w-full sm:w-auto items-center justify-center">
-          <button className="group relative px-10 py-4 rounded-xl bg-gradient-to-r from-blue-400 to-indigo-500 overflow-hidden font-bold transition-all uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(96,165,250,0.4)] hover:shadow-[0_0_40px_rgba(99,102,241,0.6)] hover:-translate-y-1 w-full sm:w-auto">
+          <Link href="/play" className="group relative px-10 py-4 rounded-xl bg-gradient-to-r from-blue-400 to-indigo-500 overflow-hidden font-bold transition-all uppercase tracking-widest text-sm shadow-[0_0_20px_rgba(96,165,250,0.4)] hover:shadow-[0_0_40px_rgba(99,102,241,0.6)] hover:-translate-y-1 w-full sm:w-auto">
             <div className="absolute inset-0 -left-[100%] bg-gradient-to-r from-transparent via-white/30 to-transparent group-hover:animate-[shine_1.5s_ease-in-out_infinite]" />
             <span className="relative flex items-center justify-center gap-3 text-white drop-shadow-md">
               <Gamepad2 className="w-5 h-5 group-hover:rotate-12 transition-transform duration-300" />
               Play The Game
             </span>
-          </button>
+          </Link>
 
-          <button className="group relative px-10 py-4 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm overflow-hidden font-bold transition-all uppercase tracking-widest text-sm hover:border-indigo-400/60 hover:bg-indigo-900/20 hover:-translate-y-1 w-full sm:w-auto">
+          <a
+            href={DEMO_VIDEO_URL}
+            target="_blank"
+            rel="noreferrer"
+            className="group relative px-10 py-4 rounded-xl border border-white/20 bg-white/5 backdrop-blur-sm overflow-hidden font-bold transition-all uppercase tracking-widest text-sm hover:border-indigo-400/60 hover:bg-indigo-900/20 hover:-translate-y-1 w-full sm:w-auto"
+          >
             <div className="absolute inset-0 bg-gradient-to-b from-white/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
             <span className="relative flex items-center justify-center gap-3 text-white">
               <Play className="w-4 h-4 text-blue-400 group-hover:scale-125 transition-transform duration-300" />
               Watch Demo
             </span>
-          </button>
+          </a>
         </div>
       </div>
 

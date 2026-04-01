@@ -268,8 +268,7 @@ export default function MagazineViewer() {
               </a>
               
               <a 
-                  href="/Magazine_Diamond_In_The_Sky.pdf" 
-                  download
+                  href="/magazine" 
                   className="group relative flex items-center gap-4 bg-indigo-500/10 hover:bg-indigo-500/20 border border-indigo-500/20 px-8 py-4 rounded-full transition-all duration-300"
               >
                   <Download className="w-4 h-4 group-hover:animate-bounce" style={{ stroke: "url(#icon-gradient)" }} />

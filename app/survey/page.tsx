@@ -3,47 +3,7 @@
 import { useState, useEffect, useRef } from "react"; 
 import { useRouter } from "next/navigation"; 
 import { Star, Rocket, X, Zap, Smile, Gamepad2, Globe, Volume2, VolumeX } from "lucide-react"; 
-
-// MISSION PHASES
-const MISSION_PHASES = [ 
-  { 
-    title: "Space Cadet Profile", 
-    subtitle: "Tell us a little bit about yourself!", 
-    icon: <Smile className="w-10 h-10 text-blue-400" />,
-    questions: [ 
-      { id: "age", label: "How old are you?", options: [{label: "Under 10", value: "under_10"}, {label: "10-12 years", value: "10-12"}, {label: "13-15 years", value: "13-15"}, {label: "16+ years", value: "16+"}] }, 
-      { id: "grade", label: "What is your grade level?", options: [{label: "Grades 1-3", value: "1-3"}, {label: "Grades 4-6", value: "4-6"}, {label: "Grades 7-9", value: "7-9"}, {label: "Grade 10+", value: "10+"}] },
-      { id: "gender", label: "What is your gender?", options: [{label: "Boy", value: "male"}, {label: "Girl", value: "female"}, {label: "Prefer not to say", value: "n/a"}] },
-      { id: "learned_space", label: "Have you ever learned about space in school?", options: [{label: "Yes!", value: "yes"}, {label: "No, not yet", value: "no"}] }
-    ] 
-  }, 
-  { 
-    title: "Space Explorer", 
-    subtitle: "What do you think about the universe?", 
-    icon: <Globe className="w-10 h-10 text-blue-400" />,
-    questions: [ 
-      { id: "interest_level", label: "How interested are you in learning about space?", options: [{label: "Super interested!", value: "very"}, {label: "A little bit", value: "somewhat"}, {label: "Neutral", value: "neutral"}, {label: "Not really", value: "not_very"}, {label: "Not at all", value: "not_at_all"}] }, 
-      { id: "start_learning", label: "When did you first learn about space?", options: [{label: "When I was little (Grades 1-3)", value: "early"}, {label: "A bit later (Grades 4-6)", value: "middle"}, {label: "Just recently (Grades 7-9)", value: "recent"}, {label: "I don't remember", value: "unknown"}] },
-      { id: "interest_compare", label: "Compared to before, do you like space:", options: [{label: "A lot more now!", value: "higher"}, {label: "About the same", value: "same"}, {label: "Less than before", value: "lower"}] },
-      { id: "lower_age", label: "If you like it less, when did that happen?", options: [{label: "Before I was 8", value: "before_8"}, {label: "Ages 8-10", value: "8-10"}, {label: "Ages 11-13", value: "11-13"}, {label: "Ages 14-16", value: "14-16"}, {label: "I'm not sure", value: "not_sure"}] },
-      { id: "lower_reason", label: "What made you lose interest? (Pick your main reason)", options: [{label: "It's too hard", value: "hard"}, {label: "It's not exciting", value: "boring"}, {label: "Too many facts", value: "facts"}, {label: "No fun activities", value: "no_hands"}, {label: "I don't relate to it", value: "relate"}] }
-    ] 
-  }, 
-  { 
-    title: "Future Missions", 
-    subtitle: "Games, rewards, and the future!", 
-    icon: <Gamepad2 className="w-10 h-10 text-yellow-400" />,
-    questions: [ 
-      { id: "pref_learning", label: "How would you rather learn about space?", options: [{label: "Reading a book", value: "textbook"}, {label: "Watching videos", value: "video"}, {label: "Playing a game", value: "game"}, {label: "Doing experiments", value: "experiment"}] }, 
-      { id: "played_game", label: "Have you ever played a learning game before?", options: [{label: "Yes!", value: "yes"}, {label: "No", value: "no"}] },
-      { id: "liked_game", label: "If yes, what was the best part?", options: [{label: "Getting rewards", value: "rewards"}, {label: "Playing with friends", value: "compete"}, {label: "Beating missions", value: "missions"}, {label: "Exploring worlds", value: "explore"}, {label: "Cool stories", value: "story"}] },
-      { id: "game_features", label: "What makes a game super fun for you?", options: [{label: "Badges & Points", value: "rewards"}, {label: "An awesome story", value: "story"}, {label: "Playing on a team", value: "team"}, {label: "Real NASA stuff", value: "nasa"}] },
-      { id: "try_diamond", label: "Want to try our new game 'Diamond in the Sky'?", options: [{label: "Yes, definitely!", value: "yes"}, {label: "Maybe", value: "maybe"}, {label: "I don't know", value: "unsure"}, {label: "No thanks", value: "no"}] },
-      { id: "dream_stem", label: "Do you dream of working in space or science?", options: [{label: "Yes, I do!", value: "yes"}, {label: "Maybe someday", value: "maybe"}, {label: "Not really", value: "not_really"}, {label: "No", value: "no"}] },
-      { id: "inspire_stem", label: "Could a space game make you want to be a scientist?", options: [{label: "Definitely!", value: "yes"}, {label: "Maybe", value: "maybe"}, {label: "Not sure", value: "unsure"}, {label: "No", value: "no"}] }
-    ] 
-  } 
-]; 
+import { MISSION_PHASES } from "@/lib/missionSurvey";
 
 // GRAPHICS COMPONENTS
 const SunGraphic = () => (
@@ -133,7 +93,13 @@ const SpaceshipGraphic = ({ size = "lg" }: { size?: "sm" | "lg" }) => {
         </div>
       </div>
     );
-  }
+};
+
+const PHASE_ICONS = [
+  <Smile key="cadet_profile" className="w-10 h-10 text-blue-400" />,
+  <Globe key="space_explorer" className="w-10 h-10 text-blue-400" />,
+  <Gamepad2 key="future_missions" className="w-10 h-10 text-yellow-400" />
+];
 
 export default function StarMissionPage() { 
   const router = useRouter(); 
@@ -142,9 +108,11 @@ export default function StarMissionPage() {
   const [isFinalizing, setIsFinalizing] = useState(false); 
   const [showFinalSky, setShowFinalSky] = useState(false); 
   const [isLaunching, setIsLaunching] = useState(false); 
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [answers, setAnswers] = useState<Record<string, string>>({}); 
   const [isMusicPlaying, setIsMusicPlaying] = useState(true);
   const [missedQuestionId, setMissedQuestionId] = useState<string | null>(null);
+  const [submitError, setSubmitError] = useState<string | null>(null);
 
   // Refs for audio and scrolling
   const backgroundMusicRef = useRef<HTMLAudioElement | null>(null);
@@ -168,7 +136,7 @@ export default function StarMissionPage() {
 
   useEffect(() => {
     if (isMusicPlaying) {
-        backgroundMusicRef.current?.play().catch(e => console.log("Auto-play prevented", e));
+        backgroundMusicRef.current?.play().catch(() => undefined);
     } else {
         backgroundMusicRef.current?.pause();
     }
@@ -190,7 +158,38 @@ export default function StarMissionPage() {
     }, 2000); 
   }; 
 
-  const handlePhaseNavigation = () => {
+  const submitSurvey = async () => {
+    setIsSubmitting(true);
+    setSubmitError(null);
+
+    try {
+      const response = await fetch("/api/survey", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        },
+        body: JSON.stringify(answers)
+      });
+
+      const result = await response.json();
+
+      if (!response.ok || !result?.ok) {
+        throw new Error(result?.error || "Failed to submit the survey.");
+      }
+
+      setIsSubmitting(false);
+      setIsFinalizing(true);
+      playSound(successSoundRef);
+      setTimeout(() => setShowFinalSky(true), 1200);
+    } catch (error) {
+      setIsSubmitting(false);
+      setSubmitError(
+        error instanceof Error ? error.message : "Failed to submit the survey."
+      );
+    }
+  };
+
+  const handlePhaseNavigation = async () => {
     const activePhase = MISSION_PHASES[currentStep];
     
     // Find the first unanswered question in the current phase
@@ -218,14 +217,13 @@ export default function StarMissionPage() {
     if (currentStep < MISSION_PHASES.length - 1) { 
       setCurrentStep(currentStep + 1); 
       playSound(clickSoundRef);
+      setSubmitError(null);
       // Scroll back to top for the new phase
       if (scrollContainerRef.current) {
         scrollContainerRef.current.scrollTop = 0;
       }
     } else { 
-      setIsFinalizing(true); 
-      playSound(successSoundRef);
-      setTimeout(() => setShowFinalSky(true), 1200); 
+      await submitSurvey();
     } 
   }; 
 
@@ -235,11 +233,14 @@ export default function StarMissionPage() {
     setIsFinalizing(false); 
     setShowFinalSky(false); 
     setIsLaunching(false); 
+    setIsSubmitting(false);
     setAnswers({}); 
+    setSubmitError(null);
     playSound(clickSoundRef);
   }; 
 
   const activePhase = MISSION_PHASES[currentStep]; 
+  const activePhaseIcon = PHASE_ICONS[currentStep];
 
   return ( 
     <section 
@@ -318,7 +319,7 @@ export default function StarMissionPage() {
               <div className="flex justify-between items-center relative"> 
                 <div className="flex items-center gap-4 text-center w-full justify-center"> 
                   <div className="p-4 bg-[#02040D]/50 rounded-3xl shadow-inner border border-white/5">
-                    {activePhase.icon}
+                    {activePhaseIcon}
                   </div>
                   <div> 
                     <h2 className="text-4xl md:text-5xl font-black tracking-tight text-white drop-shadow-md"> 
@@ -353,6 +354,7 @@ export default function StarMissionPage() {
                           key={opt.value} 
                           onClick={() => {
                             setAnswers({...answers, [q.id]: opt.value});
+                            setSubmitError(null);
                             playSound(clickSoundRef);
                           }} 
                           className={` 
@@ -373,17 +375,36 @@ export default function StarMissionPage() {
             </div> 
 
             <div className="p-6 bg-[#02040D]/80 border-t border-[#1A2541] flex justify-between items-center rounded-b-[2.5rem] relative z-10"> 
-              <span className="text-blue-200 font-bold text-lg hidden sm:block">
-                Step {currentStep + 1} of {MISSION_PHASES.length}
-              </span>
+              <div className="hidden sm:block">
+                <span className="text-blue-200 font-bold text-lg">
+                  Step {currentStep + 1} of {MISSION_PHASES.length}
+                </span>
+                {submitError ? (
+                  <p className="mt-2 max-w-sm text-sm font-medium text-red-300">
+                    {submitError}
+                  </p>
+                ) : null}
+              </div>
               <button 
                 onClick={handlePhaseNavigation}
-                className="w-full sm:w-auto px-12 py-5 rounded-full text-2xl font-black transition-all flex justify-center items-center gap-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-[0_8px_0_rgba(49,46,129,1)] hover:shadow-[0_4px_0_rgba(49,46,129,1)] hover:translate-y-[4px] active:shadow-none active:translate-y-[8px]" 
+                disabled={isSubmitting}
+                className="w-full sm:w-auto px-12 py-5 rounded-full text-2xl font-black transition-all flex justify-center items-center gap-3 bg-gradient-to-r from-blue-500 to-indigo-600 text-white shadow-[0_8px_0_rgba(49,46,129,1)] hover:shadow-[0_4px_0_rgba(49,46,129,1)] hover:translate-y-[4px] active:shadow-none active:translate-y-[8px] disabled:cursor-not-allowed disabled:translate-y-0 disabled:shadow-none disabled:opacity-70" 
               > 
-                {currentStep === MISSION_PHASES.length - 1 ? 'Submit' : 'NEXT STEP'} 
+                {isSubmitting
+                  ? "Submitting..."
+                  : currentStep === MISSION_PHASES.length - 1
+                    ? "Submit"
+                    : "NEXT STEP"} 
                 <Rocket className="w-6 h-6" /> 
               </button> 
             </div> 
+            {submitError ? (
+              <div className="px-6 pb-6 sm:hidden">
+                <p className="text-center text-sm font-medium text-red-300">
+                  {submitError}
+                </p>
+              </div>
+            ) : null}
           </div> 
         </div> 
       )} 
