@@ -1,6 +1,7 @@
 import { NextResponse } from "next/server";
-import { google } from "googleapis";
 import { SURVEY_FIELD_ORDER } from "@/lib/missionSurvey";
+
+export const runtime = "nodejs";
 
 const BACKEND_METADATA_COLUMNS = [
   "referer_origin",
@@ -13,23 +14,9 @@ const BACKEND_METADATA_COLUMNS = [
   "request_id"
 ] as const;
 
-const SURVEY_SHEET_COLUMNS = [
-  "submitted_at",
-  ...SURVEY_FIELD_ORDER,
-  ...BACKEND_METADATA_COLUMNS
-] as const;
-
 function getEnv(name: string) {
-  const v = process.env[name];
-  if (!v) return null;
-  return v;
-}
-
-function normalizeCellValue(value: unknown) {
-  if (value == null) return "";
-  if (Array.isArray(value)) return value.join(", ");
-  if (typeof value === "object") return JSON.stringify(value);
-  return String(value);
+  const value = process.env[name];
+  return value?.trim() || null;
 }
 
 function firstNonEmpty(...values: Array<string | null>) {
@@ -38,6 +25,19 @@ function firstNonEmpty(...values: Array<string | null>) {
 
 function normalizeHeaderValue(value: string | null) {
   return value?.replace(/^"+|"+$/g, "").trim() ?? "";
+}
+
+function normalizeDatabaseText(value: unknown) {
+  if (value == null) return null;
+
+  const normalized =
+    typeof value === "string"
+      ? value.trim()
+      : Array.isArray(value)
+        ? value.join(", ").trim()
+        : String(value).trim();
+
+  return normalized ? normalized : null;
 }
 
 function extractPreferredLanguage(req: Request) {
@@ -131,85 +131,86 @@ function collectBackendMetadata(req: Request) {
   };
 }
 
+function buildSurveyResponse(body: Record<string, unknown>, req: Request) {
+  const metadata = collectBackendMetadata(req);
+  const response: Record<string, string | null> = {
+    submitted_at: new Date().toISOString()
+  };
+
+  for (const field of SURVEY_FIELD_ORDER) {
+    response[field] = normalizeDatabaseText(body[field]);
+  }
+
+  for (const field of BACKEND_METADATA_COLUMNS) {
+    response[field] = normalizeDatabaseText(metadata[field]);
+  }
+
+  return response;
+}
+
 export async function POST(req: Request) {
   try {
     const body = (await req.json()) as Record<string, unknown>;
-    const backendMetadata = collectBackendMetadata(req);
+    const surveyResponse = buildSurveyResponse(body, req);
+    const isProduction = process.env.NODE_ENV === "production";
 
-    const spreadsheetId = getEnv("GOOGLE_SHEETS_SPREADSHEET_ID");
-    const clientEmail = getEnv("GOOGLE_SHEETS_CLIENT_EMAIL");
-    const privateKeyRaw = getEnv("GOOGLE_SHEETS_PRIVATE_KEY");
-    const tabName = getEnv("GOOGLE_SHEETS_TAB_NAME") || "Responses";
+    const supabaseUrl = getEnv("SUPABASE_URL");
+    const supabaseKey =
+      getEnv("SUPABASE_SECRET_KEY") || getEnv("SUPABASE_SERVICE_ROLE_KEY");
+    const tableName = getEnv("SUPABASE_SURVEY_TABLE") || "survey_responses";
 
-    // If env is missing, still allow local dev without breaking UI
-    if (!spreadsheetId || !clientEmail || !privateKeyRaw) {
+    if (!supabaseUrl || !supabaseKey) {
+      if (isProduction) {
+        return NextResponse.json(
+          {
+            ok: false,
+            error:
+              "Supabase is not configured. Set SUPABASE_URL and SUPABASE_SECRET_KEY."
+          },
+          { status: 500 }
+        );
+      }
+
       return NextResponse.json({
         ok: true,
         stored: "local-dev",
-        received: {
-          ...body,
-          ...backendMetadata
+        received: surveyResponse
+      });
+    }
+
+    const response = await fetch(
+      `${supabaseUrl}/rest/v1/${encodeURIComponent(tableName)}`,
+      {
+        method: "POST",
+        headers: {
+          apikey: supabaseKey,
+          Authorization: `Bearer ${supabaseKey}`,
+          "Content-Type": "application/json",
+          Prefer: "return=minimal"
         },
-        columns: SURVEY_SHEET_COLUMNS
-      });
+        body: JSON.stringify(surveyResponse),
+        cache: "no-store"
+      }
+    );
+
+    if (!response.ok) {
+      const errorText = await response.text();
+      throw new Error(errorText || "Failed to insert survey response.");
     }
-
-    const privateKey = privateKeyRaw.replace(/\\n/g, "\n");
-
-    const auth = new google.auth.JWT({
-      email: clientEmail,
-      key: privateKey,
-      scopes: ["https://www.googleapis.com/auth/spreadsheets"]
-    });
-
-    const sheets = google.sheets({ version: "v4", auth });
-    const headerResponse = await sheets.spreadsheets.values.get({
-      spreadsheetId,
-      range: `${tabName}!1:1`
-    });
-    const currentHeaderRow = headerResponse.data.values?.[0] ?? [];
-    const expectedHeaderRow = Array.from(SURVEY_SHEET_COLUMNS);
-    const headerMatches =
-      currentHeaderRow.length === expectedHeaderRow.length &&
-      currentHeaderRow.every((value, index) => value === expectedHeaderRow[index]);
-
-    if (!headerMatches) {
-      await sheets.spreadsheets.values.update({
-        spreadsheetId,
-        range: `${tabName}!A1`,
-        valueInputOption: "USER_ENTERED",
-        requestBody: {
-          values: [expectedHeaderRow]
-        }
-      });
-    }
-
-    const submittedAt = new Date().toISOString();
-    const rowData: Record<string, unknown> = {
-      ...body,
-      ...backendMetadata
-    };
-    const values = [
-      SURVEY_SHEET_COLUMNS.map((column) =>
-        column === "submitted_at"
-          ? submittedAt
-          : normalizeCellValue(rowData[column])
-      )
-    ];
-
-    await sheets.spreadsheets.values.append({
-      spreadsheetId,
-      range: `${tabName}!A2`,
-      valueInputOption: "USER_ENTERED",
-      requestBody: { values }
-    });
 
     return NextResponse.json({
       ok: true,
-      stored: "google-sheets",
-      columns: SURVEY_SHEET_COLUMNS
+      stored: "supabase",
+      table: tableName
     });
-  } catch (err: any) {
-    return NextResponse.json({ ok: false, error: err?.message || "Unknown error" }, { status: 500 });
+  } catch (error) {
+    return NextResponse.json(
+      {
+        ok: false,
+        error:
+          error instanceof Error ? error.message : "Unknown error"
+      },
+      { status: 500 }
+    );
   }
 }
