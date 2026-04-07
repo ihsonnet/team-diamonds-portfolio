@@ -1,13 +1,13 @@
 import { cookies } from "next/headers";
+import SurveyResponsesDashboard from "@/components/admin/SurveyResponsesDashboard";
+import { MISSION_PHASES, SURVEY_FIELD_ORDER } from "@/lib/missionSurvey";
 import {
-  buildSurveyDashboardSummary,
-  type SurveyBreakdownItem,
+  BACKEND_METADATA_COLUMNS,
   formatSurveyValue,
   getSurveyAdminPassword,
   isSurveyAdminSessionValid,
   listSurveyResponses,
   SURVEY_ADMIN_COOKIE_NAME,
-  SURVEY_RESPONSE_COLUMNS,
   SURVEY_RESPONSE_LABELS,
   type SurveyResponseRow
 } from "@/lib/surveyResponses";
@@ -28,15 +28,6 @@ type SurveyResponsesPageProps = {
   searchParams?: Promise<Record<string, string | string[] | undefined>>;
 };
 
-const SUMMARY_FIELDS = [
-  "age",
-  "grade",
-  "gender",
-  "interest_level",
-  "device_type",
-  "geo_country"
-] as const;
-
 function getSearchParamValue(
   searchParams: Record<string, string | string[] | undefined>,
   key: string
@@ -45,37 +36,88 @@ function getSearchParamValue(
   return Array.isArray(value) ? value[0] : value;
 }
 
-function BreakdownPanel({
-  title,
-  items
-}: {
-  title: string;
-  items: SurveyBreakdownItem[];
-}) {
-  return (
-    <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
-      <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
-        {title}
-      </p>
-      {items.length === 0 ? (
-        <p className="mt-4 text-sm text-slate-300">No data yet.</p>
-      ) : (
-        <div className="mt-4 space-y-3">
-          {items.map((item) => (
-            <div
-              key={`${title}-${item.value}`}
-              className="flex items-center justify-between gap-4 rounded-2xl border border-white/8 bg-slate-950/40 px-4 py-3"
-            >
-              <span className="text-sm text-slate-100">{item.label}</span>
-              <span className="rounded-full bg-cyan-400/15 px-3 py-1 text-xs font-semibold text-cyan-200">
-                {item.count}
-              </span>
-            </div>
-          ))}
-        </div>
-      )}
-    </div>
-  );
+function buildDisplayField(field: string, rawValue: string | null) {
+  return {
+    key: field,
+    label: SURVEY_RESPONSE_LABELS[field] ?? field,
+    rawValue,
+    value: formatSurveyValue(field, rawValue)
+  };
+}
+
+function buildResponseViewModel(row: SurveyResponseRow, index: number) {
+  const responseId = row.id ?? `response-${index + 1}`;
+  const answeredCount = SURVEY_FIELD_ORDER.filter((field) => Boolean(row[field])).length;
+  const totalQuestions = SURVEY_FIELD_ORDER.length;
+  const completionPercent = totalQuestions
+    ? Math.round((answeredCount / totalQuestions) * 100)
+    : 0;
+
+  const sections = MISSION_PHASES.map((phase) => {
+    const items = phase.questions
+      .map((question) => buildDisplayField(question.id, row[question.id]))
+      .filter((item) => item.rawValue);
+
+    return {
+      key: phase.key,
+      title: phase.title,
+      subtitle: phase.subtitle,
+      answeredCount: items.length,
+      unansweredCount: phase.questions.length - items.length,
+      items
+    };
+  }).filter((section) => section.items.length > 0);
+
+  const metadataItems = [
+    buildDisplayField("id", responseId),
+    ...BACKEND_METADATA_COLUMNS.map((field) => buildDisplayField(field, row[field]))
+  ].filter((item) => item.rawValue);
+
+  const overviewItems = [
+    buildDisplayField("age", row.age),
+    buildDisplayField("grade", row.grade),
+    buildDisplayField("interest_level", row.interest_level),
+    buildDisplayField("try_diamond", row.try_diamond),
+    buildDisplayField("device_type", row.device_type),
+    buildDisplayField("geo_country", row.geo_country)
+  ].filter((item) => item.rawValue);
+
+  const facets = {
+    age: buildDisplayField("age", row.age),
+    grade: buildDisplayField("grade", row.grade),
+    interest: buildDisplayField("interest_level", row.interest_level),
+    device: buildDisplayField("device_type", row.device_type),
+    country: buildDisplayField("geo_country", row.geo_country),
+    tryDiamond: buildDisplayField("try_diamond", row.try_diamond),
+    browser: buildDisplayField("browser_family", row.browser_family)
+  };
+
+  const searchText = [
+    responseId,
+    row.submitted_at,
+    ...SURVEY_FIELD_ORDER.map((field) => row[field]),
+    ...BACKEND_METADATA_COLUMNS.map((field) => row[field]),
+    ...overviewItems.map((item) => item.value)
+  ]
+    .filter(Boolean)
+    .join(" ")
+    .toLowerCase();
+
+  return {
+    id: responseId,
+    responseLabel: `Response ${String(index + 1).padStart(2, "0")}`,
+    submittedAtLabel: formatSurveyValue("submitted_at", row.submitted_at),
+    submittedAtRaw: row.submitted_at,
+    responseId,
+    answeredCount,
+    totalQuestions,
+    completionPercent,
+    searchText,
+    facets,
+    overviewItems,
+    sections,
+    metadataItems
+  };
 }
 
 function renderLoginState(errorCode?: string) {
@@ -149,71 +191,6 @@ function renderMissingPasswordState() {
   );
 }
 
-function ResponseCard({
-  row,
-  index
-}: {
-  row: SurveyResponseRow;
-  index: number;
-}) {
-  return (
-    <details
-      open={index === 0}
-      className="rounded-[28px] border border-white/12 bg-slate-950/70 shadow-lg shadow-slate-950/40"
-    >
-      <summary className="cursor-pointer list-none px-6 py-5">
-        <div className="flex flex-col gap-4 sm:flex-row sm:items-start sm:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.24em] text-cyan-300">
-              Response {String(index + 1).padStart(2, "0")}
-            </p>
-            <h2 className="mt-2 text-xl font-semibold text-white">
-              {formatSurveyValue("submitted_at", row.submitted_at)}
-            </h2>
-            <p className="mt-2 text-sm text-slate-400">
-              {row.geo_country || "Country unknown"} | {row.device_type || "Device unknown"} |{" "}
-              {row.browser_family || "Browser unknown"}
-            </p>
-          </div>
-          <div className="grid gap-3 sm:grid-cols-2">
-            {SUMMARY_FIELDS.map((field) => (
-              <div
-                key={field}
-                className="min-w-[120px] rounded-2xl border border-white/10 bg-white/5 px-4 py-3"
-              >
-                <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
-                  {SURVEY_RESPONSE_LABELS[field]}
-                </p>
-                <p className="mt-2 text-sm font-medium text-slate-100">
-                  {formatSurveyValue(field, row[field])}
-                </p>
-              </div>
-            ))}
-          </div>
-        </div>
-      </summary>
-
-      <div className="border-t border-white/10 px-6 py-6">
-        <div className="grid gap-4 md:grid-cols-2">
-          {SURVEY_RESPONSE_COLUMNS.map((field) => (
-            <div
-              key={field}
-              className="rounded-2xl border border-white/8 bg-white/5 px-4 py-4"
-            >
-              <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
-                {SURVEY_RESPONSE_LABELS[field] ?? field}
-              </p>
-              <p className="mt-2 break-words text-sm leading-6 text-slate-100">
-                {formatSurveyValue(field, row[field])}
-              </p>
-            </div>
-          ))}
-        </div>
-      </div>
-    </details>
-  );
-}
-
 export default async function SurveyResponsesPage({
   searchParams
 }: SurveyResponsesPageProps) {
@@ -243,94 +220,44 @@ export default async function SurveyResponsesPage({
       error instanceof Error ? error.message : "Unable to load survey responses.";
   }
 
-  const latestSubmission = responses[0]?.submitted_at
-    ? formatSurveyValue("submitted_at", responses[0].submitted_at)
-    : "No submissions yet";
-  const dashboardSummary = buildSurveyDashboardSummary(responses);
+  if (loadError) {
+    return (
+      <section className="mx-auto max-w-3xl px-6 py-16">
+        <div className="rounded-[32px] border border-rose-400/25 bg-slate-950/80 p-8 shadow-2xl shadow-rose-500/10">
+          <div className="flex items-start justify-between gap-4">
+            <div>
+              <p className="text-sm uppercase tracking-[0.28em] text-rose-200">
+                Data Load Error
+              </p>
+              <h1 className="mt-3 text-3xl font-semibold text-white">
+                Survey responses could not be loaded
+              </h1>
+              <p className="mt-4 text-sm leading-6 text-slate-300">
+                {loadError}
+              </p>
+            </div>
+
+            <form action={logoutOfSurveyResponses}>
+              <button
+                type="submit"
+                className="rounded-2xl border border-white/15 px-4 py-3 text-sm font-medium text-slate-100 transition hover:border-cyan-300 hover:text-cyan-200"
+              >
+                Lock page
+              </button>
+            </form>
+          </div>
+        </div>
+      </section>
+    );
+  }
+
+  const dashboardResponses = responses.map(buildResponseViewModel);
 
   return (
-    <section className="mx-auto max-w-7xl px-6 py-12">
-      <div className="rounded-[32px] border border-white/12 bg-slate-950/75 p-8 shadow-2xl shadow-cyan-500/5 backdrop-blur">
-        <div className="flex flex-col gap-6 lg:flex-row lg:items-start lg:justify-between">
-          <div>
-            <p className="text-sm uppercase tracking-[0.28em] text-cyan-300">
-              Private Dashboard
-            </p>
-            <h1 className="mt-3 text-3xl font-semibold text-white">
-              Survey responses
-            </h1>
-            <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
-              Live responses from Supabase, sorted by newest submission first.
-            </p>
-            <p className="mt-2 text-xs uppercase tracking-[0.22em] text-slate-500">
-              JSON endpoint: /api/survey-responses
-            </p>
-          </div>
-
-          <form action={logoutOfSurveyResponses}>
-            <button
-              type="submit"
-              className="rounded-2xl border border-white/15 px-4 py-3 text-sm font-medium text-slate-100 transition hover:border-cyan-300 hover:text-cyan-200"
-            >
-              Lock page
-            </button>
-          </form>
-        </div>
-
-        <div className="mt-8 grid gap-4 md:grid-cols-3">
-          <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
-              Total Responses
-            </p>
-            <p className="mt-3 text-3xl font-semibold text-white">
-              {dashboardSummary.totalResponses}
-            </p>
-          </div>
-          <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
-              Countries Seen
-            </p>
-            <p className="mt-3 text-3xl font-semibold text-white">
-              {dashboardSummary.countriesSeen}
-            </p>
-          </div>
-          <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
-            <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
-              Latest Submission
-            </p>
-            <p className="mt-3 text-lg font-semibold text-white">
-              {latestSubmission}
-            </p>
-          </div>
-        </div>
-
-        <div className="mt-8 grid gap-4 lg:grid-cols-2">
-          <BreakdownPanel title="Device Types" items={dashboardSummary.deviceTypes} />
-          <BreakdownPanel title="Countries" items={dashboardSummary.countries} />
-          <BreakdownPanel title="Interest Levels" items={dashboardSummary.interestLevels} />
-          <BreakdownPanel title="Want To Try Diamond" items={dashboardSummary.tryDiamond} />
-        </div>
-
-        {loadError ? (
-          <div className="mt-8 rounded-2xl border border-rose-400/30 bg-rose-500/10 px-5 py-4 text-sm text-rose-100">
-            {loadError}
-          </div>
-        ) : null}
-
-        {!loadError && responses.length === 0 ? (
-          <div className="mt-8 rounded-[28px] border border-dashed border-white/15 bg-white/[0.03] px-6 py-12 text-center text-slate-300">
-            No survey responses have been stored yet.
-          </div>
-        ) : null}
-
-        {!loadError && responses.length > 0 ? (
-          <div className="mt-8 space-y-5">
-            {responses.map((row, index) => (
-              <ResponseCard key={row.id ?? `${row.submitted_at}-${index}`} row={row} index={index} />
-            ))}
-          </div>
-        ) : null}
-      </div>
-    </section>
+    <SurveyResponsesDashboard
+      endpointPath="/api/survey-responses"
+      responses={dashboardResponses}
+      lockAction={logoutOfSurveyResponses}
+    />
   );
 }

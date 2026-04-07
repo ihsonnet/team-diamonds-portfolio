@@ -1,7 +1,7 @@
 import { createHash, timingSafeEqual } from "node:crypto";
 import { MISSION_PHASES, SURVEY_FIELD_ORDER } from "@/lib/missionSurvey";
 
-const BACKEND_METADATA_COLUMNS = [
+export const BACKEND_METADATA_COLUMNS = [
   "referer_origin",
   "referer_path",
   "preferred_language",

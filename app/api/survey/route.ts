@@ -121,10 +121,12 @@ function collectBackendMetadata(req: Request) {
     os_family: extractOsFamily(req, userAgent),
     device_type: extractDeviceType(req, userAgent),
     geo_country: firstNonEmpty(
+      req.headers.get("x-geo-country"),
       req.headers.get("x-vercel-ip-country"),
       req.headers.get("cf-ipcountry")
     ),
     request_id: firstNonEmpty(
+      req.headers.get("x-netlify-request-id"),
       req.headers.get("x-vercel-id"),
       req.headers.get("cf-ray")
     )
