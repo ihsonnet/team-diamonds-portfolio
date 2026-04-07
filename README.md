@@ -33,3 +33,5 @@ The survey API accepts a local no-op fallback only during development. In produc
 
 ## Private response viewer
 Visit `/survey-responses` to review submissions. The page is protected by the `SURVEY_RESPONSES_PASSWORD` environment variable and reads live data from Supabase on the server.
+
+For programmatic access, use `/api/survey-responses`. It accepts either the same logged-in admin cookie from `/survey-responses`, an `Authorization: Bearer <SURVEY_RESPONSES_PASSWORD>` header, or an `x-survey-admin-password` header.

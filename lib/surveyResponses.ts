@@ -1,4 +1,4 @@
-import { createHash } from "node:crypto";
+import { createHash, timingSafeEqual } from "node:crypto";
 import { MISSION_PHASES, SURVEY_FIELD_ORDER } from "@/lib/missionSurvey";
 
 const BACKEND_METADATA_COLUMNS = [
@@ -23,6 +23,21 @@ export const SURVEY_RESPONSE_COLUMNS = [
 ] as const;
 
 export type SurveyResponseRow = Record<string, string | null>;
+export type SurveyBreakdownItem = {
+  value: string;
+  label: string;
+  count: number;
+};
+
+export type SurveyDashboardSummary = {
+  totalResponses: number;
+  countriesSeen: number;
+  latestSubmission: string | null;
+  deviceTypes: SurveyBreakdownItem[];
+  countries: SurveyBreakdownItem[];
+  interestLevels: SurveyBreakdownItem[];
+  tryDiamond: SurveyBreakdownItem[];
+};
 
 export const SURVEY_RESPONSE_LABELS = Object.fromEntries([
   ["id", "Response ID"],
@@ -68,6 +83,18 @@ export function createSurveyAdminSessionValue(password: string) {
   return hashValue(`survey-admin-session:${password}`);
 }
 
+export function matchesSurveyAdminPassword(candidate: string | null | undefined) {
+  const password = getSurveyAdminPassword();
+
+  if (!password || typeof candidate !== "string") return false;
+
+  const passwordBuffer = Buffer.from(password);
+  const candidateBuffer = Buffer.from(candidate);
+
+  if (passwordBuffer.length !== candidateBuffer.length) return false;
+  return timingSafeEqual(passwordBuffer, candidateBuffer);
+}
+
 export function isSurveyAdminSessionValid(sessionValue: string | undefined | null) {
   const password = getSurveyAdminPassword();
 
@@ -95,6 +122,47 @@ export function formatSurveyValue(field: string, value: string | null) {
   }
 
   return getSurveyOptionLabel(field, value) ?? value;
+}
+
+function buildFieldBreakdown(
+  rows: SurveyResponseRow[],
+  field: string,
+  limit = 5
+) {
+  const counts = new Map<string, number>();
+
+  for (const row of rows) {
+    const value = row[field];
+    if (!value) continue;
+    counts.set(value, (counts.get(value) ?? 0) + 1);
+  }
+
+  return [...counts.entries()]
+    .sort((left, right) => right[1] - left[1] || left[0].localeCompare(right[0]))
+    .slice(0, limit)
+    .map(([value, count]) => ({
+      value,
+      count,
+      label: formatSurveyValue(field, value)
+    }));
+}
+
+export function buildSurveyDashboardSummary(
+  rows: SurveyResponseRow[]
+): SurveyDashboardSummary {
+  const countriesSeen = new Set(
+    rows.map((row) => row.geo_country).filter(Boolean)
+  ).size;
+
+  return {
+    totalResponses: rows.length,
+    countriesSeen,
+    latestSubmission: rows[0]?.submitted_at ?? null,
+    deviceTypes: buildFieldBreakdown(rows, "device_type", 4),
+    countries: buildFieldBreakdown(rows, "geo_country", 6),
+    interestLevels: buildFieldBreakdown(rows, "interest_level", 5),
+    tryDiamond: buildFieldBreakdown(rows, "try_diamond", 4)
+  };
 }
 
 function getSupabaseSurveyConfig() {

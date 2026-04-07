@@ -1,5 +1,7 @@
 import { cookies } from "next/headers";
 import {
+  buildSurveyDashboardSummary,
+  type SurveyBreakdownItem,
   formatSurveyValue,
   getSurveyAdminPassword,
   isSurveyAdminSessionValid,
@@ -43,8 +45,37 @@ function getSearchParamValue(
   return Array.isArray(value) ? value[0] : value;
 }
 
-function countDistinctValues(rows: SurveyResponseRow[], field: string) {
-  return new Set(rows.map((row) => row[field]).filter(Boolean)).size;
+function BreakdownPanel({
+  title,
+  items
+}: {
+  title: string;
+  items: SurveyBreakdownItem[];
+}) {
+  return (
+    <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
+      <p className="text-[11px] uppercase tracking-[0.22em] text-slate-400">
+        {title}
+      </p>
+      {items.length === 0 ? (
+        <p className="mt-4 text-sm text-slate-300">No data yet.</p>
+      ) : (
+        <div className="mt-4 space-y-3">
+          {items.map((item) => (
+            <div
+              key={`${title}-${item.value}`}
+              className="flex items-center justify-between gap-4 rounded-2xl border border-white/8 bg-slate-950/40 px-4 py-3"
+            >
+              <span className="text-sm text-slate-100">{item.label}</span>
+              <span className="rounded-full bg-cyan-400/15 px-3 py-1 text-xs font-semibold text-cyan-200">
+                {item.count}
+              </span>
+            </div>
+          ))}
+        </div>
+      )}
+    </div>
+  );
 }
 
 function renderLoginState(errorCode?: string) {
@@ -215,6 +246,7 @@ export default async function SurveyResponsesPage({
   const latestSubmission = responses[0]?.submitted_at
     ? formatSurveyValue("submitted_at", responses[0].submitted_at)
     : "No submissions yet";
+  const dashboardSummary = buildSurveyDashboardSummary(responses);
 
   return (
     <section className="mx-auto max-w-7xl px-6 py-12">
@@ -229,6 +261,9 @@ export default async function SurveyResponsesPage({
             </h1>
             <p className="mt-3 max-w-2xl text-sm leading-6 text-slate-300">
               Live responses from Supabase, sorted by newest submission first.
+            </p>
+            <p className="mt-2 text-xs uppercase tracking-[0.22em] text-slate-500">
+              JSON endpoint: /api/survey-responses
             </p>
           </div>
 
@@ -248,7 +283,7 @@ export default async function SurveyResponsesPage({
               Total Responses
             </p>
             <p className="mt-3 text-3xl font-semibold text-white">
-              {responses.length}
+              {dashboardSummary.totalResponses}
             </p>
           </div>
           <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
@@ -256,7 +291,7 @@ export default async function SurveyResponsesPage({
               Countries Seen
             </p>
             <p className="mt-3 text-3xl font-semibold text-white">
-              {countDistinctValues(responses, "geo_country")}
+              {dashboardSummary.countriesSeen}
             </p>
           </div>
           <div className="rounded-[24px] border border-white/10 bg-white/5 p-5">
@@ -267,6 +302,13 @@ export default async function SurveyResponsesPage({
               {latestSubmission}
             </p>
           </div>
+        </div>
+
+        <div className="mt-8 grid gap-4 lg:grid-cols-2">
+          <BreakdownPanel title="Device Types" items={dashboardSummary.deviceTypes} />
+          <BreakdownPanel title="Countries" items={dashboardSummary.countries} />
+          <BreakdownPanel title="Interest Levels" items={dashboardSummary.interestLevels} />
+          <BreakdownPanel title="Want To Try Diamond" items={dashboardSummary.tryDiamond} />
         </div>
 
         {loadError ? (

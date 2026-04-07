@@ -5,7 +5,8 @@ import { redirect } from "next/navigation";
 import {
   SURVEY_ADMIN_COOKIE_NAME,
   createSurveyAdminSessionValue,
-  getSurveyAdminPassword
+  getSurveyAdminPassword,
+  matchesSurveyAdminPassword
 } from "@/lib/surveyResponses";
 
 const SESSION_MAX_AGE_SECONDS = 60 * 60 * 8;
@@ -30,7 +31,7 @@ export async function loginToSurveyResponses(formData: FormData) {
 
   if (
     typeof submittedPassword !== "string" ||
-    submittedPassword !== configuredPassword
+    !matchesSurveyAdminPassword(submittedPassword)
   ) {
     redirect("/survey-responses?error=invalid");
   }
