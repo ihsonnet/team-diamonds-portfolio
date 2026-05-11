@@ -2,7 +2,7 @@
 "use client";
 
 import React, { useState } from "react";
-import { Users, Sparkles, Fingerprint, ExternalLink } from "lucide-react"; 
+import { Users, Sparkles, Fingerprint, ExternalLink } from "lucide-react";
 import { cx } from "../../lib/utils";
 
 type TeamBio = {
@@ -11,7 +11,7 @@ type TeamBio = {
   img: string;
   desc: string;
   highlights: string[];
-  website?: string; 
+  website?: string;
 };
 
 const bios: TeamBio[] = [
@@ -24,28 +24,28 @@ const bios: TeamBio[] = [
   },
   {
     name: "Md Munim Ahmed",
-    role: "Product Engineer",
+    role: "User Experience Engineer",
     img: "/images/team/munim.jpg",
     desc: "Invents features, designs user flows, and engineers the visual experience.",
     highlights: ["Feature Strategy", "UI/UX Design", "User-flow Development"],
   },
   {
     name: "Tisha Khandokar",
-    role: "Product Lead",
+    role: "Project Manager & Team Lead",
     img: "/images/team/tisha.jpg",
     desc: "Directs high-impact product vision and delivers internationally recognized milestones.",
     highlights: ["Strategic Innovation", "Principal Authority", "International Influence"],
   },
   {
     name: "Injamamul Haque Sonet",
-    role: "Product Architect",
+    role: "System Architect and Technical Lead",
     img: "/images/team/sonet.jpg",
     desc: "Architects product foundations and drives the technical vision for complex development.",
     highlights: ["Database Design", "Technical Authority", "System Security"],
   },
   {
     name: "Abu Niaz",
-    role: "Developer",
+    role: "Native Application Developer",
     img: "/images/team/niaz.jpg",
     desc: "Transforms designs into clean, highly optimized interactive code.",
     highlights: ["Frontend", "Animation", "Integration"],
@@ -65,7 +65,7 @@ export default function MeetTeam() {
 
   return (
     <section className="force-trebuchet relative py-20 sm:py-32 z-10 flex justify-center w-full overflow-hidden bg-transparent">
-      
+
       <style dangerouslySetInnerHTML={{
         __html: `
         .force-trebuchet, .force-trebuchet * {
@@ -74,7 +74,7 @@ export default function MeetTeam() {
       `}} />
 
       <div className="relative w-full max-w-6xl px-4 sm:px-6">
-        
+
         {/* Section Header */}
         <div className="flex flex-col items-center mb-12 sm:mb-16 opacity-90 text-center">
           <div className="flex items-center gap-3 mb-4">
@@ -100,8 +100,8 @@ export default function MeetTeam() {
                 onMouseEnter={() => setActiveIdx(idx)}
                 className={cx(
                   "group relative overflow-hidden rounded-[2rem] cursor-pointer transition-all duration-700 ease-[cubic-bezier(0.25,1,0.5,1)] flex flex-col justify-end border backdrop-blur-md",
-                  isActive 
-                    ? "md:flex- flex- border-blue-500/40 shadow-[0_0_40px_-10px_rgba(37,99,235,0.3)] bg-[#060d1b]" 
+                  isActive
+                    ? "md:flex- flex- border-blue-500/40 shadow-[0_0_40px_-10px_rgba(37,99,235,0.3)] bg-[#060d1b]"
                     : "md:flex- flex-1 border-white/5 shadow-none hover:border-blue-500/30 hover:bg-[#060d1b]/80 bg-[#060d1b]/40"
                 )}
                 title={
@@ -125,8 +125,8 @@ export default function MeetTeam() {
                 {/* Ambient Glows & Gradients */}
                 <div className={cx(
                   "absolute inset-0 transition-opacity duration-700",
-                  isActive 
-                    ? "bg-gradient-to-t from-[#060d1b] via-[#060d1b]/60 to-transparent opacity-100" 
+                  isActive
+                    ? "bg-gradient-to-t from-[#060d1b] via-[#060d1b]/60 to-transparent opacity-100"
                     : "bg-[#060d1b]/70 opacity-100"
                 )} />
 
@@ -137,7 +137,7 @@ export default function MeetTeam() {
 
                 {/* --- CONTENT AREA --- */}
                 <div className="relative z-10 w-full h-full flex flex-col justify-end p-6 overflow-hidden">
-                  
+
                   {/* INACTIVE STATE CONTENT */}
                   <div className={cx(
                     "absolute bottom-6 left-0 right-0 flex items-center justify-center transition-all duration-500",
@@ -164,18 +164,18 @@ export default function MeetTeam() {
                         {item.role}
                       </span>
                     </div>
-                    
+
                     <div className="flex items-center gap-3 mb-3">
                       <h3 className="text-3xl sm:text-4xl font-thin tracking-tight text-white whitespace-nowrap drop-shadow-md">
                         {item.name}
                       </h3>
                       <ExternalLink className="h-5 w-5 text-white/80 hover:text-blue-400 transition-colors opacity-0 animate-[fadeIn_0.5s_ease-in-out_0.5s_forwards]" />
                     </div>
-                    
+
                     <p className="text-sm text-white/80 font-medium leading-relaxed mb-6 drop-shadow-md">
                       {item.desc}
                     </p>
-                    
+
                     <div className="flex flex-wrap gap-2">
                       {item.highlights.map((h) => (
                         <span
